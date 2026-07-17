@@ -32,6 +32,30 @@ border-radius: 4px;
 ::-webkit-scrollbar-thumb:hover {
 background: #d4af37;
 }
+
+@media (min-width: 1024px) and (orientation: landscape) {
+.landscape-main {
+height: calc(100vh - 85px);
+overflow: hidden;
+}
+.landscape-sidebar {
+height: 100%;
+overflow-y: auto;
+padding-right: 4px;
+}
+.landscape-canvas-sec {
+height: 100%;
+display: flex;
+flex-direction: column;
+justify-content: center;
+}
+.landscape-canvas-wrapper {
+height: 100%;
+display: flex;
+flex-direction: column;
+justify-content: center;
+}
+}
 </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between overflow-x-hidden">
@@ -67,10 +91,11 @@ MIDDLE-EARTH ARCHIVES
 </header>
 
 <!-- Main Workspace Container -->
-<main class="flex-grow max-w-7xl w-full mx-auto p-4 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+<!-- Side columns rebalanced from 4/8 to 3/9 to maximize horizontal space for the canvas on desktop -->
+<main class="landscape-main flex-grow max-w-7xl w-full mx-auto p-1 sm:p-2 grid grid-cols-1 lg:grid-cols-12 gap-3 lg:gap-4 items-start">
 
-<!-- Left Column: Statistics, Progress Rings, Filters & Lists (4 cols on lg) -->
-<section class="lg:col-span-4 flex flex-col gap-6">
+<!-- Left Column: Statistics, Progress Rings, Filters & Lists (3 cols on lg) -->
+<section class="landscape-sidebar lg:col-span-3 flex flex-col gap-3 lg:gap-4">
 
 <!-- Progress & Quick-Stats Card -->
 <div class="p-5 rounded-2xl border border-gray-800/80 bg-gray-900/40 backdrop-blur-md shadow-xl">
@@ -227,11 +252,12 @@ Reset Binder
 
 </section>
 
-<!-- Right Column: Interactive Canvas Binder View (8 cols on lg) -->
-<section class="lg:col-span-8 flex flex-col items-center gap-4">
+<!-- Right Column: Interactive Canvas Binder View (9 cols on lg) -->
+<section class="landscape-canvas-sec lg:col-span-9 flex flex-col items-center gap-2 w-full">
 
 <!-- Canvas Container Wrapper with Absolute Arrow Navigation Layers -->
-<div class="w-full relative bg-gray-950/30 rounded-3xl border border-gray-800/60 p-4 shadow-2xl flex flex-col items-center group">
+<!-- Padding completely minimized to p-1 sm:p-2 to make the binder cover fill the workspace area -->
+<div class="landscape-canvas-wrapper w-full relative bg-gray-950/30 rounded-3xl border border-gray-800/60 p-1 sm:p-2 shadow-2xl flex flex-col items-center group">
 
 <!-- Floating Left Page Navigation Arrow -->
 <button id="floating-arrow-prev" class="absolute left-2 md:-left-6 top-[55%] -translate-y-1/2 z-30 w-12 h-16 md:w-14 md:h-20 bg-gray-950/80 hover:bg-amber-950/90 border border-gray-800 hover:border-amber-500/50 rounded-xl flex items-center justify-center text-amber-500 text-xl font-bold shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 opacity-0 group-hover:opacity-100 focus:opacity-100 disabled:opacity-0 pointer-events-auto">
@@ -264,7 +290,7 @@ Interactive MTG Binder
 </div>
 
 <!-- Custom Multi-Jump Pagination Controls below Binder Cards -->
-<div id="pagination-controls" class="w-full flex flex-wrap items-center justify-center gap-1.5 mt-4 px-2 py-2.5 bg-black/40 rounded-xl border border-gray-800/40">
+<div id="pagination-controls" class="w-full flex flex-wrap items-center justify-center gap-1 mt-2 px-1.5 py-1.5 bg-black/40 rounded-xl border border-gray-800/40">
 <!-- Loaded via JavaScript dynamically -->
 </div>
 
@@ -527,24 +553,20 @@ const ctx = canvas.getContext('2d');
 const V_WIDTH = 1000;
 const V_HEIGHT = 1100;
 
-// Cross-browser crash-proof rounded rectangle coordinate path generator (Highly performant, stable on Safari/iOS)
-function drawRoundRect(ctx, x, y, w, h, r) {
-if (ctx.roundRect) {
-ctx.roundRect(x, y, w, h, r);
-return;
-}
-ctx.moveTo(x + r, y);
-ctx.lineTo(x + w - r, y);
-ctx.arcTo(x + w, y, x + w, y + h, r);
-ctx.lineTo(x + w, y + h - r);
-ctx.arcTo(x + w, y + h, x, y + h, r);
-ctx.lineTo(x + r, y + h);
-ctx.arcTo(x, y + h, x, y, r);
-ctx.lineTo(x, y + r);
-ctx.arcTo(x, y, x + w, y, r);
-}
+        // Cross-browser crash-proof rounded rectangle coordinate path generator (Highly performant, stable on Safari/iOS)
+        function drawRoundRect(ctx, x, y, w, h, r) {
+            ctx.moveTo(x + r, y);
+            ctx.lineTo(x + w - r, y);
+            ctx.arcTo(x + w, y, x + w, y + h, r);
+            ctx.lineTo(x + w, y + h - r);
+            ctx.arcTo(x + w, y + h, x, y + h, r);
+            ctx.lineTo(x + r, y + h);
+            ctx.arcTo(x, y + h, x, y, r);
+            ctx.lineTo(x, y + r);
+            ctx.arcTo(x, y, x + w, y, r);
+        }
 
-// Dynamic Grid Calculation Engine
+// Dynamic Grid Calculation Engine (Fixed coordinate layout)
 function getGridLayout() {
 if (layoutType === '2x2') {
 return {
@@ -552,10 +574,10 @@ cardWidth: 320,
 cardHeight: 448,
 cardsPerPage: 4,
 slots: [
-{ x: 130, y: 120, col: 0, row: 0 },
-{ x: 550, y: 120, col: 1, row: 0 },
-{ x: 130, y: 600, col: 0, row: 1 },
-{ x: 550, y: 600, col: 1, row: 1 }
+{ x: 130, y: 100, col: 0, row: 0 },
+{ x: 550, y: 100, col: 1, row: 0 },
+{ x: 130, y: 610, col: 0, row: 1 },
+{ x: 550, y: 610, col: 1, row: 1 }
 ]
 };
 } else { // 3x3 Layout Mode
@@ -1777,9 +1799,41 @@ proceed.className = "text-xs font-medium py-2 rounded-lg bg-rose-950/20 border b
 
 function resizeCanvas() {
 const parent = canvas.parentElement;
-const w = parent.clientWidth;
-canvas.style.width = w + 'px';
-canvas.style.height = (w * (V_HEIGHT / V_WIDTH)) + 'px';
+const parentWidth = parent.clientWidth;
+
+// Check if we are in landscape orientation where screen height is restricted
+const isLandscape = window.innerWidth > window.innerHeight;
+
+if (isLandscape && window.innerHeight < 1024) {
+    const headerEl = document.querySelector('header');
+    const topBarEl = document.querySelector('.landscape-canvas-sec > div > div:first-child');
+    const pagControlsEl = document.getElementById('pagination-controls');
+    
+    const headerH = headerEl ? headerEl.offsetHeight : 80;
+    const topBarH = topBarEl ? topBarEl.offsetHeight : 40;
+    const pagH = pagControlsEl ? pagControlsEl.offsetHeight : 50;
+    
+    // Reserve space for external heights to make canvas fit cleanly
+    const reservedHeight = headerH + topBarH + pagH + 50; 
+    const maxCanvasHeight = window.innerHeight - reservedHeight;
+    
+    // Calculate targeted height constraint
+    const targetHeight = Math.min(maxCanvasHeight, parentWidth * (V_HEIGHT / V_WIDTH));
+    const targetWidth = targetHeight * (V_WIDTH / V_HEIGHT);
+    
+    if (targetWidth > parentWidth) {
+        const finalWidth = parentWidth;
+        canvas.style.width = finalWidth + 'px';
+        canvas.style.height = (finalWidth * (V_HEIGHT / V_WIDTH)) + 'px';
+    } else {
+        canvas.style.width = targetWidth + 'px';
+        canvas.style.height = targetHeight + 'px';
+    }
+} else {
+    // Standard desktop and upright portrait mobile layouts scaling
+    canvas.style.width = parentWidth + 'px';
+    canvas.style.height = (parentWidth * (V_HEIGHT / V_WIDTH)) + 'px';
+}
 }
 
 // SCRYFALL API INTEGRATED DETAILED CARD VIEW MODAL
