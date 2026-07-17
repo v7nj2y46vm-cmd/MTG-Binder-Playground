@@ -35,11 +35,11 @@ background: #d4af37;
 }
 </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between overflow-x-hidden">
+<body class="h-screen w-screen flex flex-col justify-between overflow-hidden select-none">
 
-<!-- STREAMING_CHUNK: Formatting responsive fantasy navigation header... -->
+<!-- STREAMING_CHUNK: Designing fixed global header... -->
 <!-- Header -->
-<header class="border-b border-gray-800/80 bg-gray-950/60 backdrop-blur-md sticky top-0 z-40 px-4 py-3">
+<header class="border-b border-gray-800/80 bg-gray-950/60 backdrop-blur-md px-4 py-3 flex-shrink-0">
 <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
 <div class="flex items-center gap-3">
 <div class="p-2 bg-gradient-to-br from-amber-500 to-yellow-600 rounded-lg shadow-lg shadow-amber-500/10">
@@ -68,15 +68,15 @@ MIDDLE-EARTH ARCHIVES
 </div>
 </header>
 
-<!-- STREAMING_CHUNK: Preparing layout grid with tight workspace spacing... -->
-<!-- Main Workspace Container -->
-<main class="flex-grow max-w-7xl w-full mx-auto p-1 sm:p-2 grid grid-cols-1 lg:grid-cols-12 gap-3 lg:gap-4 items-start">
+<!-- STREAMING_CHUNK: Structuring side columns with discrete scroll blocks... -->
+<!-- Main Workspace Container: Height is strictly locked with overflow prevented -->
+<main class="flex-grow max-w-7xl w-full mx-auto p-2 grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch overflow-hidden h-[calc(100vh-80px)]">
 
-<!-- Left Column: Statistics, Progress Rings, Filters & Lists (3 cols on lg) -->
-<section class="lg:col-span-3 flex flex-col gap-3 lg:gap-4">
+<!-- Left Column: Statistics, Progress Rings, Filters & Lists (Scrolls independently if content overflows) -->
+<section class="lg:col-span-3 flex flex-col gap-3 h-full overflow-y-auto pr-1">
 
 <!-- Progress & Quick-Stats Card -->
-<div class="p-4 rounded-2xl border border-gray-800/80 bg-gray-900/40 backdrop-blur-md shadow-xl">
+<div class="p-4 rounded-2xl border border-gray-800/80 bg-gray-900/40 backdrop-blur-md shadow-xl flex-shrink-0">
 <h2 class="text-base font-bold fantasy-title tracking-wider text-amber-400 mb-3 flex items-center gap-2">
 🏆 COLLECTION STATS
 </h2>
@@ -128,9 +128,8 @@ MIDDLE-EARTH ARCHIVES
 </div>
 </div>
 
-<!-- STREAMING_CHUNK: Building sleek navigational switches... -->
 <!-- Navigation & Filtering Controller -->
-<div class="p-4 rounded-2xl border border-gray-800/80 bg-gray-900/40 backdrop-blur-md shadow-xl flex flex-col gap-3">
+<div class="p-4 rounded-2xl border border-gray-800/80 bg-gray-900/40 backdrop-blur-md shadow-xl flex flex-col gap-3 flex-shrink-0">
 <h2 class="text-xs font-bold fantasy-title tracking-wider text-amber-400 flex items-center gap-2">
 📂 BINDER SECTION SELECTOR
 </h2>
@@ -167,9 +166,8 @@ MIDDLE-EARTH ARCHIVES
 </div>
 </div>
 
-<!-- STREAMING_CHUNK: Constructing live Scryfall summon selector widget... -->
 <!-- Scryfall Database Grail Search Console (Displays only when in Grails Section) -->
-<div id="grails-search-widget" class="p-4 rounded-2xl border border-purple-500/30 bg-purple-950/10 backdrop-blur-md shadow-xl flex flex-col gap-2.5 transition-all duration-300 hidden">
+<div id="grails-search-widget" class="p-4 rounded-2xl border border-purple-500/30 bg-purple-950/10 backdrop-blur-md shadow-xl flex flex-col gap-2.5 transition-all duration-300 hidden flex-shrink-0">
 <h3 class="text-xs font-bold fantasy-title text-purple-400 tracking-wider flex items-center justify-between">
 <span>🔮 SUMMON SCRYFALL GRAIL</span>
 <span class="text-[8px] bg-purple-900/40 text-purple-300 px-1.5 py-0.5 rounded border border-purple-800">Database Live</span>
@@ -197,9 +195,8 @@ Search
 </button>
 </div>
 
-<!-- STREAMING_CHUNK: Constructing backup and administrative features... -->
 <!-- Quick Helper & Backup Actions -->
-<div class="p-4 rounded-2xl border border-gray-800/80 bg-gray-900/40 backdrop-blur-md shadow-xl flex flex-col gap-2.5">
+<div class="p-4 rounded-2xl border border-gray-800/80 bg-gray-900/40 backdrop-blur-md shadow-xl flex flex-col gap-2.5 flex-shrink-0">
 <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center justify-between">
 <span>Collection Actions</span>
 <span class="text-[9px] text-amber-500">Local Safe</span>
@@ -225,33 +222,30 @@ Reset Binder
 </button>
 </div>
 </div>
-
-<div class="text-[9px] text-gray-400 leading-relaxed bg-black/30 p-2 rounded-lg border border-gray-800/40">
-ℹ️ <span class="font-semibold text-gray-300">iPad Hint:</span> Use the <span class="text-indigo-400 font-semibold">Export Save</span> tool regularly. It generates a backup code you can paste into Notes to keep your safe-file immortal!
-</div>
 </div>
 
 </section>
 
 <!-- STREAMING_CHUNK: Coding responsive active binder-view wrapper... -->
 <!-- Right Column: Interactive Canvas Binder View (9 cols on lg) -->
-<section class="lg:col-span-9 flex flex-col items-center gap-2 w-full">
+<!-- Uses flex layout with h-full and overflow-hidden to contain the canvas frame strictly -->
+<section class="lg:col-span-9 flex flex-col items-center justify-center h-full overflow-hidden w-full">
 
 <!-- Canvas Container Wrapper with Absolute Arrow Navigation Layers -->
-<div class="w-full relative bg-gray-950/30 rounded-3xl border border-gray-800/60 p-1 sm:p-2 shadow-2xl flex flex-col items-center group">
+<div class="w-full h-full relative bg-gray-950/30 rounded-3xl border border-gray-800/60 p-1 sm:p-2 shadow-2xl flex flex-col justify-between items-center group overflow-hidden">
 
 <!-- Floating Left Page Navigation Arrow -->
-<button id="floating-arrow-prev" class="absolute left-1.5 md:-left-6 top-[55%] -translate-y-1/2 z-30 w-10 h-16 md:w-14 md:h-20 bg-gray-950/80 hover:bg-amber-950/90 border border-gray-800 hover:border-amber-500/50 rounded-xl flex items-center justify-center text-amber-500 text-xl font-bold shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 opacity-0 group-hover:opacity-100 focus:opacity-100 disabled:opacity-0 pointer-events-auto">
+<button id="floating-arrow-prev" class="absolute left-1.5 md:-left-6 top-[50%] -translate-y-1/2 z-30 w-10 h-16 md:w-14 md:h-20 bg-gray-950/80 hover:bg-amber-950/90 border border-gray-800 hover:border-amber-500/50 rounded-xl flex items-center justify-center text-amber-500 text-xl font-bold shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 opacity-0 group-hover:opacity-100 focus:opacity-100 disabled:opacity-0 pointer-events-auto">
 ◀
 </button>
 
 <!-- Floating Right Page Navigation Arrow -->
-<button id="floating-arrow-next" class="absolute right-1.5 md:-right-6 top-[55%] -translate-y-1/2 z-30 w-10 h-16 md:w-14 md:h-20 bg-gray-950/80 hover:bg-amber-950/90 border border-gray-800 hover:border-amber-500/50 rounded-xl flex items-center justify-center text-amber-500 text-xl font-bold shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 opacity-0 group-hover:opacity-100 focus:opacity-100 disabled:opacity-0 pointer-events-auto">
+<button id="floating-arrow-next" class="absolute right-1.5 md:-right-6 top-[50%] -translate-y-1/2 z-30 w-10 h-16 md:w-14 md:h-20 bg-gray-950/80 hover:bg-amber-950/90 border border-gray-800 hover:border-amber-500/50 rounded-xl flex items-center justify-center text-amber-500 text-xl font-bold shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 opacity-0 group-hover:opacity-100 focus:opacity-100 disabled:opacity-0 pointer-events-auto">
 ▶
 </button>
 
 <!-- Binder Top Bar: Title & Page Numbers -->
-<div class="w-full flex items-center justify-between mb-1.5 px-3 py-1 bg-black/40 rounded-xl border border-gray-800/50">
+<div class="w-full flex items-center justify-between px-3 py-1 bg-black/40 rounded-xl border border-gray-800/50 flex-shrink-0">
 <div class="flex items-center gap-1.5">
 <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse" id="binder-status-dot"></span>
 <span id="binder-current-label" class="text-[10px] sm:text-xs font-bold tracking-wider text-amber-200 uppercase fantasy-title">
@@ -263,15 +257,15 @@ Page <span id="txt-page-num" class="text-amber-400 font-bold">1</span> / <span i
 </div>
 </div>
 
-<!-- The Interactive Canvas -->
-<div class="w-full relative flex justify-center">
-<canvas id="binder-canvas" class="rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.8)] cursor-pointer max-w-full h-auto border border-gray-800/50 bg-stone-900/30">
+<!-- The Interactive Canvas Container (Pivotal flex-grow with min-h-0 to let canvas shrink safely) -->
+<div class="flex-grow w-full flex items-center justify-center overflow-hidden min-h-0 relative py-1.5">
+<canvas id="binder-canvas" class="rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.8)] cursor-pointer border border-gray-800/50 bg-stone-900/30 block max-h-full max-w-full">
 Interactive MTG Binder
 </canvas>
 </div>
 
 <!-- Custom Multi-Jump Pagination Controls below Binder Cards -->
-<div id="pagination-controls" class="w-full flex flex-wrap items-center justify-center gap-1 mt-2 px-1.5 py-1.5 bg-black/40 rounded-xl border border-gray-800/40">
+<div id="pagination-controls" class="w-full flex flex-wrap items-center justify-center gap-1 px-1.5 py-1.5 bg-black/40 rounded-xl border border-gray-800/40 flex-shrink-0">
 <!-- Loaded via JavaScript dynamically -->
 </div>
 
@@ -402,8 +396,8 @@ VIEW CARD ON SCRYFALL ↗
 </div>
 
 <!-- Footer -->
-<footer class="border-t border-gray-800/60 bg-gray-950 py-4 px-6 text-center text-xs text-gray-500">
-<div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+<footer class="border-t border-gray-800/60 bg-gray-950 py-2 px-6 text-center text-[10px] text-gray-500 flex-shrink-0">
+<div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-1">
 <span>Designed for passionate MTG Tales of Middle-earth Special Edition Hunters.</span>
 <span>Images and data powered by the Scryfall API.</span>
 </div>
@@ -533,9 +527,10 @@ pCtx.globalCompositeOperation = 'source-over';
 const canvas = document.getElementById('binder-canvas');
 const ctx = canvas.getContext('2d');
 
-// Virtual coordinates of binder canvas (Slightly taller to pack bigger cards comfortably)
+// STREAMING_CHUNK: Balancing grid aspect math for dashboard bounds...
+// Virtual coordinates of binder canvas (Standard height optimized for no scroll)
 const V_WIDTH = 1000;
-const V_HEIGHT = 1330;
+const V_HEIGHT = 1100;
 
 // Cross-browser crash-proof rounded rectangle coordinate path generator (Highly performant, stable on Safari/iOS)
 function drawRoundRect(ctx, x, y, w, h, r) {
@@ -551,35 +546,35 @@ function drawRoundRect(ctx, x, y, w, h, r) {
 }
 
 // Dynamic Grid Calculation Engine (Fixed coordinate layout)
-// Maximized card sizing by reducing left spine block and margins down to 30px
+// Streamlined card coordinates to fit fully inside the virtual V_HEIGHT = 1100 layout space
 function getGridLayout() {
 if (layoutType === '2x2') {
 return {
-cardWidth: 420, // Huge card width upscaled to maximize visibility
-cardHeight: 588, // Accurate 1.4:1 card aspect ratio
+cardWidth: 320,
+cardHeight: 448,
 cardsPerPage: 4,
 slots: [
-{ x: 90, y: 30, col: 0, row: 0 },
-{ x: 550, y: 30, col: 1, row: 0 },
-{ x: 90, y: 690, col: 0, row: 1 },
-{ x: 550, y: 690, col: 1, row: 1 }
+{ x: 130, y: 100, col: 0, row: 0 },
+{ x: 550, y: 100, col: 1, row: 0 },
+{ x: 130, y: 600, col: 0, row: 1 },
+{ x: 550, y: 600, col: 1, row: 1 }
 ]
 };
 } else { // 3x3 Layout Mode
 return {
-cardWidth: 275, // Large card width upscaled to maximize space
-cardHeight: 385, // Accurate 1.4:1 card aspect ratio
+cardWidth: 210,
+cardHeight: 294,
 cardsPerPage: 9,
 slots: [
-{ x: 90, y: 20, col: 0, row: 0 },
-{ x: 392, y: 20, col: 1, row: 0 },
-{ x: 695, y: 20, col: 2, row: 0 },
-{ x: 90, y: 460, col: 0, row: 1 },
-{ x: 392, y: 460, col: 1, row: 1 },
-{ x: 695, y: 460, col: 2, row: 1 },
-{ x: 90, y: 900, col: 0, row: 2 },
-{ x: 392, y: 900, col: 1, row: 2 },
-{ x: 695, y: 900, col: 2, row: 2 }
+{ x: 145, y: 80, col: 0, row: 0 },
+{ x: 430, y: 80, col: 1, row: 0 },
+{ x: 715, y: 80, col: 2, row: 0 },
+{ x: 145, y: 420, col: 1, row: 1 },
+{ x: 430, y: 420, col: 1, row: 1 },
+{ x: 715, y: 420, col: 2, row: 1 },
+{ x: 145, y: 760, col: 2, row: 2 },
+{ x: 430, y: 760, col: 2, row: 2 },
+{ x: 715, y: 760, col: 2, row: 2 }
 ]
 };
 }
@@ -836,47 +831,48 @@ ctx.font = '13px Inter';
 ctx.fillText('TAP COVER TO OPEN ARCHIVE', V_WIDTH/2, V_HEIGHT/2 + 420);
 }
 
+// STREAMING_CHUNK: Coding spine and paper sheet styles...
 // Draw open binder with pages and dynamic layout slots
 function drawOpenBinder(ctx, pageCards) {
 // Draw background table
 ctx.fillStyle = '#07080a';
 ctx.fillRect(0, 0, V_WIDTH, V_HEIGHT);
 
-// Left spine binder cover strip (leather shadow effect - shrunk to 60px)
+// Left spine binder cover strip (leather shadow effect)
 ctx.fillStyle = '#141721';
-ctx.fillRect(0, 0, 60, V_HEIGHT);
+ctx.fillRect(0, 0, 70, V_HEIGHT);
 ctx.fillStyle = '#1e2433';
-ctx.fillRect(0, 0, 54, V_HEIGHT);
+ctx.fillRect(0, 0, 64, V_HEIGHT);
 
 // Binder center metal ring spine overlay
-const ringSpineX = 30;
+const ringSpineX = 35;
 ctx.fillStyle = '#0a0d14';
 ctx.fillRect(ringSpineX - 8, 0, 16, V_HEIGHT);
 
 // Draw Page Sheet backing
 ctx.fillStyle = '#121620';
-ctx.fillRect(60, 0, V_WIDTH - 60, V_HEIGHT);
+ctx.fillRect(70, 0, V_WIDTH - 70, V_HEIGHT);
 
 // Soft white/blue sheet highlight sheen
-const paperSheen = ctx.createLinearGradient(60, 0, V_WIDTH, V_HEIGHT);
+const paperSheen = ctx.createLinearGradient(70, 0, V_WIDTH, V_HEIGHT);
 paperSheen.addColorStop(0, 'rgba(255,255,255,0.03)');
 paperSheen.addColorStop(0.5, 'rgba(0,0,0,0)');
 paperSheen.addColorStop(1, 'rgba(255,255,255,0.01)');
 ctx.fillStyle = paperSheen;
-ctx.fillRect(60, 0, V_WIDTH - 60, V_HEIGHT);
+ctx.fillRect(70, 0, V_WIDTH - 70, V_HEIGHT);
 
-// Draw physical D-rings passing through reinforced sheet holes (spaced to match 1330px height)
-const ringYCoordinates = [180, 665, 1150];
+// Draw physical D-rings passing through reinforced sheet holes
+const ringYCoordinates = [150, 550, 950];
 ringYCoordinates.forEach(y => {
 ctx.fillStyle = 'rgba(0,0,0,0.6)';
 ctx.beginPath();
-ctx.arc(65, y, 14, 0, Math.PI*2);
+ctx.arc(75, y, 14, 0, Math.PI*2);
 ctx.fill();
 
 ctx.strokeStyle = '#5a6b85';
 ctx.lineWidth = 3;
 ctx.beginPath();
-ctx.arc(65, y, 9, 0, Math.PI*2);
+ctx.arc(75, y, 9, 0, Math.PI*2);
 ctx.stroke();
 
 const metalRingGrad = ctx.createLinearGradient(ringSpineX - 30, y - 20, ringSpineX + 50, y + 20);
@@ -905,6 +901,7 @@ const currentLayout = getGridLayout();
 const slotWidth = currentLayout.cardWidth;
 const slotHeight = currentLayout.cardHeight;
 
+// STREAMING_CHUNK: Drawing standard grid layouts...
 // Render Card Slots based on active layout parameters
 currentLayout.slots.forEach((slot, index) => {
 const card = pageCards[index];
@@ -1053,11 +1050,12 @@ ctx.textAlign = 'center';
 ctx.fillText('i', infoX, infoY);
 ctx.restore();
 
+// STREAMING_CHUNK: Formatting name labels inside grid cards...
 // Bottom card labels
 ctx.fillStyle = '#f3f4f6';
-ctx.font = layoutType === '2x2' ? '600 13px Inter' : '600 10px Inter';
+ctx.font = layoutType === '2x2' ? '600 13px Inter' : '600 11px Inter';
 ctx.textAlign = 'center';
-const maxChar = layoutType === '2x2' ? 30 : 20;
+const maxChar = layoutType === '2x2' ? 25 : 18;
 const labelTrunc = card.name.length > maxChar ? card.name.substring(0, maxChar - 2) + '...' : card.name;
 ctx.fillText(labelTrunc, slot.x + slotWidth/2, slot.y + slotHeight + 18);
 
@@ -1218,6 +1216,7 @@ drawCosmicSparkles(ctx, slot, card.num, slotWidth, slotHeight);
 ctx.restore();
 }
 
+// STREAMING_CHUNK: Defining sparkles and twinkle parameters...
 // Twinkling foil sparkles (glints) for owned premium cards
 function drawFoilSparkles(ctx, slot, cardId, slotWidth, slotHeight) {
 ctx.save();
@@ -1530,9 +1529,9 @@ const btnAll = document.getElementById('filt-all');
 const btnOwned = document.getElementById('filt-owned');
 const btnMissing = document.getElementById('filt-missing');
 
-btnAll.className = "text-[11px] font-bold py-1 px-2 rounded transition-colors " + (filt === 'all' ? "bg-amber-500 text-black shadow-inner" : "bg-gray-950 text-gray-400 hover:bg-gray-800");
-btnOwned.className = "text-[11px] font-bold py-1 px-2 rounded transition-colors " + (filt === 'owned' ? "bg-amber-500 text-black shadow-inner" : "bg-gray-950 text-gray-400 hover:bg-gray-800");
-btnMissing.className = "text-[11px] font-bold py-1 px-2 rounded transition-colors " + (filt === 'missing' ? "bg-amber-500 text-black shadow-inner" : "bg-gray-950 text-gray-400 hover:bg-gray-800");
+btnAll.className = "text-[9px] font-bold py-1 px-1 rounded transition-colors " + (filt === 'all' ? "bg-amber-500 text-black shadow-inner" : "bg-gray-950 text-gray-400 hover:bg-gray-800");
+btnOwned.className = "text-[9px] font-bold py-1 px-1 rounded transition-colors " + (filt === 'owned' ? "bg-amber-500 text-black shadow-inner" : "bg-gray-950 text-gray-400 hover:bg-gray-800");
+btnMissing.className = "text-[9px] font-bold py-1 px-1 rounded transition-colors " + (filt === 'missing' ? "bg-amber-500 text-black shadow-inner" : "bg-gray-950 text-gray-400 hover:bg-gray-800");
 
 updatePaginationUI();
 }
@@ -1782,11 +1781,20 @@ proceed.className = "text-xs font-medium py-2 rounded-lg bg-rose-950/20 border b
 }
 }
 
+// STREAMING_CHUNK: Handling canvas resizing logic...
+// Measures both screen height and width to output optimal fitting bounds
 function resizeCanvas() {
 const parent = canvas.parentElement;
-const w = parent.clientWidth;
-canvas.style.width = w + 'px';
-canvas.style.height = (w * (V_HEIGHT / V_WIDTH)) + 'px';
+if (!parent) return;
+const containerWidth = parent.clientWidth;
+const containerHeight = parent.clientHeight;
+
+const scaleX = containerWidth / V_WIDTH;
+const scaleY = containerHeight / V_HEIGHT;
+const scale = Math.min(scaleX, scaleY);
+
+canvas.style.width = (V_WIDTH * scale) + 'px';
+canvas.style.height = (V_HEIGHT * scale) + 'px';
 }
 
 // SCRYFALL API INTEGRATED DETAILED CARD VIEW MODAL
