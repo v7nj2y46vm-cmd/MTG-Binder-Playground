@@ -637,6 +637,7 @@
             ctx.arcTo(x, y, x + w, y, r);
         }
 
+        // 2x2 vs 3x3 layout position generator with ample vertical spacing
         function getGridLayout() {
             if (layoutType === '2x2') {
                 return {
@@ -740,10 +741,12 @@
             };
 
             Object.keys(tabs).forEach(sec => {
-                if (visible.includes(sec)) {
-                    tabs[sec].classList.remove('hidden');
-                } else {
-                    tabs[sec].classList.add('hidden');
+                if (tabs[sec]) {
+                    if (visible.includes(sec)) {
+                        tabs[sec].style.display = 'flex';
+                    } else {
+                        tabs[sec].style.display = 'none';
+                    }
                 }
             });
 
@@ -752,9 +755,13 @@
                     switchSection(visible[0]);
                 } else {
                     activeSection = null;
+                    updateTabStyles();
+                    updatePaginationUI();
                 }
             } else if (!activeSection && visible.length > 0) {
                 switchSection(visible[0]);
+            } else {
+                updateTabStyles();
             }
         }
 
@@ -1765,6 +1772,11 @@
             activeSection = sec;
             currentPageIndex = 0;
 
+            updateTabStyles();
+            updatePaginationUI();
+        }
+
+        function updateTabStyles() {
             const posterBtn = document.getElementById('tab-poster');
             const realmsBtn = document.getElementById('tab-realms');
             const coverBtn = document.getElementById('tab-bookcover');
@@ -1775,41 +1787,50 @@
             const statusDot = document.getElementById('binder-status-dot');
             const searchWidget = document.getElementById('grails-search-widget');
 
-            const activeClass = "px-1 py-2.5 rounded-xl border font-semibold text-[10px] tracking-wider transition-all shadow-md flex flex-col items-center justify-center gap-1 text-center";
-            const inactiveClass = "px-1 py-2.5 rounded-xl border border-gray-850 bg-gray-950/50 hover:bg-gray-800 text-gray-400 font-semibold text-[10px] tracking-wider transition-all flex flex-col items-center justify-center gap-1 text-center";
+            const baseClass = "px-1 py-2.5 rounded-xl border font-semibold text-[10px] tracking-wider transition-all flex flex-col items-center justify-center gap-1 text-center";
+            const activeStyle = "shadow-md";
+            const inactiveStyle = "border-gray-850 bg-gray-950/50 hover:bg-gray-800 text-gray-400";
 
-            posterBtn.className = inactiveClass;
-            realmsBtn.className = inactiveClass;
-            coverBtn.className = inactiveClass;
-            dragonBtn.className = inactiveClass;
-            grailsBtn.className = inactiveClass;
+            const applyStyle = (btn, isAct, activeExtra) => {
+                if (!btn) return;
+                btn.className = `${baseClass} ${isAct ? `${activeStyle} ${activeExtra}` : inactiveStyle}`;
+            };
 
-            searchWidget.classList.add('hidden');
+            applyStyle(posterBtn, activeSection === 'poster', "border-amber-500/30 bg-amber-950/20 text-amber-300");
+            applyStyle(realmsBtn, activeSection === 'realms', "border-cyan-500/30 bg-cyan-950/20 text-cyan-300");
+            applyStyle(coverBtn, activeSection === 'bookcover', "border-emerald-500/30 bg-emerald-950/20 text-emerald-300");
+            applyStyle(dragonBtn, activeSection === 'dragon', "border-orange-500/30 bg-orange-950/20 text-orange-300");
+            applyStyle(grailsBtn, activeSection === 'grails', "border-purple-500/40 bg-purple-950/20 text-purple-300 col-span-2 sm:col-span-1");
 
-            if (sec === 'poster') {
-                posterBtn.className = `${activeClass} border-amber-500/30 bg-amber-950/20 text-amber-300`;
-                label.innerText = "Poster Art (Traditional Foil)";
-                statusDot.className = "w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse";
-            } else if (sec === 'realms') {
-                realmsBtn.className = `${activeClass} border-cyan-500/30 bg-cyan-950/20 text-cyan-300`;
-                label.innerText = "Ring Showcase (Surge Foil)";
-                statusDot.className = "w-2.5 h-2.5 rounded-full bg-cyan-500 animate-pulse";
-            } else if (sec === 'bookcover') {
-                coverBtn.className = `${activeClass} border-emerald-500/30 bg-emerald-950/20 text-emerald-300`;
-                label.innerText = "The Hobbit Book Cover (Surge Foil)";
-                statusDot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse";
-            } else if (sec === 'dragon') {
-                dragonBtn.className = `${activeClass} border-orange-500/30 bg-orange-950/20 text-orange-300`;
-                label.innerText = "The Hobbit Dragon Hoard (Surge Foil)";
-                statusDot.className = "w-2.5 h-2.5 rounded-full bg-orange-500 animate-pulse";
-            } else if (sec === 'grails') {
-                grailsBtn.className = `${activeClass} border-purple-500/40 bg-purple-950/20 text-purple-300 col-span-2 sm:col-span-1`;
-                label.innerText = "Vault Grails (Cosmic Holographic)";
-                statusDot.className = "w-2.5 h-2.5 rounded-full bg-purple-500 animate-pulse";
-                searchWidget.classList.remove('hidden');
+            if (searchWidget) {
+                if (activeSection === 'grails') {
+                    searchWidget.classList.remove('hidden');
+                } else {
+                    searchWidget.classList.add('hidden');
+                }
             }
 
-            updatePaginationUI();
+            if (label && statusDot) {
+                if (activeSection === 'poster') {
+                    label.innerText = "Poster Art (Traditional Foil)";
+                    statusDot.className = "w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse";
+                } else if (activeSection === 'realms') {
+                    label.innerText = "Ring Showcase (Surge Foil)";
+                    statusDot.className = "w-2.5 h-2.5 rounded-full bg-cyan-500 animate-pulse";
+                } else if (activeSection === 'bookcover') {
+                    label.innerText = "The Hobbit Book Cover (Surge Foil)";
+                    statusDot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse";
+                } else if (activeSection === 'dragon') {
+                    label.innerText = "The Hobbit Dragon Hoard (Surge Foil)";
+                    statusDot.className = "w-2.5 h-2.5 rounded-full bg-orange-500 animate-pulse";
+                } else if (activeSection === 'grails') {
+                    label.innerText = "Vault Grails (Cosmic Holographic)";
+                    statusDot.className = "w-2.5 h-2.5 rounded-full bg-purple-500 animate-pulse";
+                } else {
+                    label.innerText = viewMode === 'chase' ? "All Chase Collections Complete" : "No Archived Collections";
+                    statusDot.className = "w-2.5 h-2.5 rounded-full bg-gray-500";
+                }
+            }
         }
 
         function setFilter(filt) {
