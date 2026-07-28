@@ -307,11 +307,11 @@
             <button id="add-sec-close" class="absolute top-3 right-3 text-gray-400 hover:text-white p-2">✕</button>
             
             <div class="flex items-center gap-2">
-                <span class="text-xl">➕</span>
-                <h3 class="text-lg font-bold fantasy-title text-amber-400">ADD NEW BINDER SECTION</h3>
+                <span id="add-sec-modal-icon" class="text-xl">➕</span>
+                <h3 id="add-sec-modal-title" class="text-lg font-bold fantasy-title text-amber-400">ADD NEW BINDER SECTION</h3>
             </div>
             
-            <p class="text-xs text-gray-400">Create a custom card checklist by set code and collector number range.</p>
+            <p id="add-sec-modal-desc" class="text-xs text-gray-400">Create a custom card checklist by set code and collector number range.</p>
 
             <div class="space-y-3">
                 <div>
@@ -1175,7 +1175,10 @@
         function getFilteredCards() {
             if (!activeSection) return [];
             let list;
-            if (activeSection === 'poster') {
+            const cs = customSections.find(s => s.id === activeSection);
+            if (cs) {
+                list = cs.cards;
+            } else if (activeSection === 'poster') {
                 list = POSTER_CARDS;
             } else if (activeSection === 'realms') {
                 list = REALMS_CARDS;
@@ -1186,8 +1189,7 @@
             } else if (activeSection === 'grails') {
                 list = grailsCollection;
             } else {
-                const cs = customSections.find(s => s.id === activeSection);
-                list = cs ? cs.cards : [];
+                list = [];
             }
 
             return list.filter(card => {
@@ -1964,9 +1966,9 @@
         function openAddSectionModal() {
             editingSectionId = null;
 
-            document.getElementById('add-sec-close').previousElementSibling.children[0].innerText = "➕";
-            document.getElementById('add-sec-close').nextElementSibling.children[1].innerText = "ADD NEW BINDER SECTION";
-            document.getElementById('add-sec-close').nextElementSibling.nextElementSibling.innerText = "Create a custom card checklist by set code and collector number range.";
+            document.getElementById('add-sec-modal-icon').innerText = "➕";
+            document.getElementById('add-sec-modal-title').innerText = "ADD NEW BINDER SECTION";
+            document.getElementById('add-sec-modal-desc').innerText = "Create a custom card checklist by set code and collector number range.";
             document.getElementById('btn-add-sec-confirm').innerText = "Create Section";
 
             document.getElementById('input-sec-name').value = '';
@@ -1981,6 +1983,40 @@
 
         function closeAddSectionModal() {
             document.getElementById('add-section-modal').classList.add('hidden');
+        }
+
+        function openEditSectionModal(secDef) {
+            editingSectionId = secDef.id;
+            
+            document.getElementById('add-sec-modal-icon').innerText = "✏️";
+            document.getElementById('add-sec-modal-title').innerText = "EDIT BINDER SECTION";
+            document.getElementById('add-sec-modal-desc').innerText = "Modify section name, set code, or number range.";
+            document.getElementById('btn-add-sec-confirm').innerText = "Save Changes";
+
+            const errEl = document.getElementById('add-sec-error');
+            errEl.innerText = '';
+            errEl.classList.add('hidden');
+
+            const cs = customSections.find(s => s.id === secDef.id);
+            if (cs) {
+                document.getElementById('input-sec-name').value = cs.name;
+                document.getElementById('input-sec-set').value = cs.setCode.toUpperCase();
+                document.getElementById('input-sec-range').value = `${cs.startNum}-${cs.endNum}`;
+            } else {
+                const builtInDefaults = {
+                    poster: { name: "Poster Art", set: "LTR", range: "731-750" },
+                    realms: { name: "Ring Showcase", set: "LTR", range: "794-823" },
+                    bookcover: { name: "Book Cover Art", set: "HOB", range: "275-284" },
+                    dragon: { name: "Dragon Hoard", set: "HOB", range: "250-274" },
+                    grails: { name: "Vault Grails", set: "CUSTOM", range: "1-100" }
+                };
+                const d = builtInDefaults[secDef.id] || { name: secDef.label, set: "LTR", range: "1-20" };
+                document.getElementById('input-sec-name').value = d.name;
+                document.getElementById('input-sec-set').value = d.set;
+                document.getElementById('input-sec-range').value = d.range;
+            }
+
+            document.getElementById('add-section-modal').classList.remove('hidden');
         }
 
         function handleCreateOrSaveSection() {
@@ -2018,25 +2054,35 @@
             }
 
             if (editingSectionId) {
-                const cs = customSections.find(s => s.id === editingSectionId);
+                let cs = customSections.find(s => s.id === editingSectionId);
+                const generatedCards = [];
+                for (let num = startNum; num <= endNum; num++) {
+                    const numStr = String(num);
+                    generatedCards.push({
+                        id: `${editingSectionId}_${numStr}`,
+                        name: `Unrevealed ${setCode.toUpperCase()} #${numStr}`,
+                        set: setCode,
+                        num: numStr,
+                        rarity: "Rare"
+                    });
+                }
+
                 if (cs) {
                     cs.name = name;
                     cs.setCode = setCode;
                     cs.startNum = startNum;
                     cs.endNum = endNum;
-
-                    const generatedCards = [];
-                    for (let num = startNum; num <= endNum; num++) {
-                        const numStr = String(num);
-                        generatedCards.push({
-                            id: `${cs.id}_${numStr}`,
-                            name: `Unrevealed ${setCode.toUpperCase()} #${numStr}`,
-                            set: setCode,
-                            num: numStr,
-                            rarity: "Rare"
-                        });
-                    }
                     cs.cards = generatedCards;
+                } else {
+                    const newCs = {
+                        id: editingSectionId,
+                        name: name,
+                        setCode: setCode,
+                        startNum: startNum,
+                        endNum: endNum,
+                        cards: generatedCards
+                    };
+                    customSections.push(newCs);
                 }
             } else {
                 const customId = `custom_${Date.now()}`;
