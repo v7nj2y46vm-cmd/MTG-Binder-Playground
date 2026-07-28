@@ -46,7 +46,6 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between overflow-x-hidden">
 
-    <!-- Header -->
     <header class="border-b border-gray-800/80 bg-gray-950/60 backdrop-blur-md sticky top-0 z-40 px-4 py-3">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
             <div class="flex items-center gap-3">
@@ -80,13 +79,11 @@
         </div>
     </header>
 
-    <!-- Main Workspace Container -->
     <main class="flex-grow max-w-7xl w-full mx-auto p-4 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
         <!-- Left Column: Statistics & Controllers (4 cols on lg) -->
         <section class="lg:col-span-4 flex flex-col gap-6">
 
-            <!-- Progress & Quick-Stats Card -->
             <div class="p-5 rounded-2xl border border-gray-800/80 bg-gray-900/40 backdrop-blur-md shadow-xl">
                 <h2 class="text-lg font-bold fantasy-title tracking-wider text-amber-400 mb-4 flex items-center gap-2">
                     🏆 COLLECTION STATS
@@ -160,7 +157,6 @@
                 </div>
             </div>
 
-            <!-- Section Selector Controller -->
             <div class="p-5 rounded-2xl border border-gray-800/80 bg-gray-900/40 backdrop-blur-md shadow-xl flex flex-col gap-4">
                 <div class="flex items-center justify-between">
                     <h2 class="text-md font-bold fantasy-title tracking-wider text-amber-400 flex items-center gap-2">
@@ -172,7 +168,7 @@
                     </button>
                 </div>
 
-                <p class="text-[10px] text-gray-500 italic">Tip: Click section to switch view. Click & hold 3s to edit or delete.</p>
+                <p class="text-[10px] text-gray-500 italic">Tip: Click section to switch view. Click & hold 3s (Chase mode) to edit or delete.</p>
 
                 <!-- Section Selector Tabs Grid (Renders Built-in + Custom Tabs) -->
                 <div id="section-tabs-container" class="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
@@ -196,7 +192,6 @@
                 </div>
             </div>
 
-            <!-- Scryfall Database Grail Search Console -->
             <div id="grails-search-widget" class="p-5 rounded-2xl border border-purple-500/30 bg-purple-950/10 backdrop-blur-md shadow-xl flex flex-col gap-3 transition-all duration-300 hidden">
                 <h3 class="text-sm font-bold fantasy-title text-purple-400 tracking-wider flex items-center justify-between">
                     <span>🔮 SUMMON SCRYFALL GRAIL</span>
@@ -225,7 +220,6 @@
                 </button>
             </div>
 
-            <!-- Collection Utility Actions -->
             <div class="p-5 rounded-2xl border border-gray-800/80 bg-gray-900/40 backdrop-blur-md shadow-xl flex flex-col gap-3">
                 <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center justify-between">
                     <span>Collection Actions</span>
@@ -256,7 +250,6 @@
 
         </section>
 
-        <!-- Right Column: Interactive Canvas Binder View (8 cols on lg) -->
         <section class="lg:col-span-8 flex flex-col items-center gap-4">
 
             <div class="w-full relative bg-gray-950/30 rounded-3xl border border-gray-800/60 p-4 shadow-2xl flex flex-col items-center group">
@@ -299,7 +292,6 @@
         </section>
     </main>
 
-    <!-- Modals Workspace -->
 
     <!-- Add/Edit Section Modal -->
     <div id="add-section-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 hidden">
@@ -344,6 +336,7 @@
         </div>
     </div>
 
+
     <!-- Section Options Modal (Edit vs Delete) -->
     <div id="section-options-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 hidden">
         <div class="bg-gray-900 border border-amber-500/40 max-w-md w-full p-6 rounded-2xl shadow-2xl text-center relative">
@@ -383,6 +376,7 @@
             </div>
         </div>
     </div>
+
 
     <!-- Card Inspector Modal -->
     <div id="card-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-start sm:items-center justify-center p-3 sm:p-4 overflow-y-auto hidden opacity-0 transition-opacity duration-300">
@@ -466,6 +460,7 @@
         </div>
     </div>
 
+
     <!-- Backup Modal -->
     <div id="backup-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 hidden">
         <div class="bg-gray-900 border border-gray-800 max-w-md w-full p-6 rounded-2xl shadow-2xl">
@@ -542,7 +537,6 @@
         </div>
     </footer>
 
-    <!-- JavaScript Application Logic -->
     <script>
         // Core built-in data structures
         const POSTER_CARDS = [
@@ -601,7 +595,6 @@
             { id: 823, name: "Tom Bombadil", set: "ltr", num: "823", rarity: "Mythic" }
         ];
 
-        // 10 Book Cover Art cards in surge foil (#275 to #284)
         const BOOKCOVER_CARDS = [
             { id: 275, name: "Unrevealed Book Cover #275", set: "hob", num: "275", rarity: "Rare" },
             { id: 276, name: "The Lord of the Eagles", set: "hob", num: "276", rarity: "Rare" },
@@ -615,7 +608,6 @@
             { id: 284, name: "Unrevealed Book Cover #284", set: "hob", num: "284", rarity: "Rare" }
         ];
 
-        // 25 Dragon Hoard Frame cards in surge foil (#250 to #274)
         const DRAGON_CARDS = [
             { id: 250, name: "Unrevealed Dragon Hoard #250", set: "hob", num: "250", rarity: "Rare" },
             { id: 251, name: "Unrevealed Dragon Hoard #251", set: "hob", num: "251", rarity: "Rare" },
@@ -644,11 +636,9 @@
             { id: 274, name: "Unrevealed Dragon Hoard #274", set: "hob", num: "274", rarity: "Rare" }
         ];
 
-        // Dynamic Grails and Dynamic Custom Sections
         let grailsCollection = [];
         let customSections = [];
 
-        // App State
         let collection = {};
         let activeSection = 'poster';
         let currentPageIndex = 0;
@@ -658,26 +648,21 @@
         let layoutType = '2x2';
         let viewMode = 'chase'; // 'chase' or 'archive'
 
-        // Cache for loaded MTG card images
         const imagePool = {};
 
-        // Animation state
         let hoverCardIndex = -1;
         let mouseX = 0;
         let mouseY = 0;
         let lastTime = 0;
         let foilAnimOffset = 0;
 
-        // Search state
         let currentSearchCards = [];
 
-        // Long Press & Section Editing Handler variables
         let holdTimer = null;
         let holdTargetSecId = null;
         let currentOptionsSecDef = null;
         let editingSectionId = null;
 
-        // One Ring SVG/Image canvas processor
         const ringScriptImg = new Image();
         ringScriptImg.src = 'image_30c465.png';
         let ringScriptLoaded = false;
@@ -706,7 +691,6 @@
             pCtx.globalCompositeOperation = 'source-over';
         };
 
-        // Canvas Elements
         const canvas = document.getElementById('binder-canvas');
         const ctx = canvas.getContext('2d');
 
@@ -806,7 +790,6 @@
             } else if (secKey === 'grails') {
                 return grailsCollection.length > 0 && grailsCollection.every(c => collection[`grails-${c.set}-${c.num}`]);
             } else {
-                // Custom section check
                 const cs = customSections.find(s => s.id === secKey);
                 if (cs && cs.cards.length > 0) {
                     return cs.cards.every(c => collection[`custom-${cs.id}-${c.set}-${c.num}`]);
@@ -853,7 +836,6 @@
                 btn.className = `px-1 py-2.5 rounded-xl border border-gray-850 bg-gray-950/50 hover:bg-gray-800 text-gray-400 font-semibold text-[10px] tracking-wider transition-all flex flex-col items-center justify-center gap-1 text-center select-none`;
                 btn.innerText = secDef.label;
 
-                // Tab Click Handler
                 btn.addEventListener('click', (e) => {
                     if (btn.dataset.cancelledByHold === 'true') {
                         delete btn.dataset.cancelledByHold;
@@ -862,7 +844,6 @@
                     switchSection(secDef.id);
                 });
 
-                // Long Press (3s) Mouse & Touch Event Listeners
                 btn.addEventListener('mousedown', () => startHoldTimer(secDef, btn));
                 btn.addEventListener('mouseup', () => cancelHoldTimer());
                 btn.addEventListener('mouseleave', () => cancelHoldTimer());
@@ -879,9 +860,9 @@
             syncSectionVisibility();
         }
 
-        // Long Press / Hold Timer (3 seconds to manage section)
         function startHoldTimer(secDef, btn) {
             cancelHoldTimer();
+            if (viewMode === 'archive') return;
             holdTargetSecId = secDef.id;
 
             btn.classList.add('holding-active');
@@ -926,22 +907,20 @@
         function openEditSectionModal(secDef) {
             editingSectionId = secDef.id;
             
-            document.getElementById('add-sec-close').previousElementSibling.children[0].innerText = "✏️";
-            document.getElementById('add-sec-close').nextElementSibling.children[1].innerText = "EDIT BINDER SECTION";
-            document.getElementById('add-sec-close').nextElementSibling.nextElementSibling.innerText = "Modify section name, set code, or number range.";
+            document.getElementById('add-sec-modal-icon').innerText = "✏️";
+            document.getElementById('add-sec-modal-title').innerText = "EDIT BINDER SECTION";
+            document.getElementById('add-sec-modal-desc').innerText = "Modify section name, set code, or number range.";
             document.getElementById('btn-add-sec-confirm').innerText = "Save Changes";
 
             const errEl = document.getElementById('add-sec-error');
             errEl.innerText = '';
             errEl.classList.add('hidden');
 
-            if (secDef.isCustom) {
-                const cs = customSections.find(s => s.id === secDef.id);
-                if (cs) {
-                    document.getElementById('input-sec-name').value = cs.name;
-                    document.getElementById('input-sec-set').value = cs.setCode.toUpperCase();
-                    document.getElementById('input-sec-range').value = `${cs.startNum}-${cs.endNum}`;
-                }
+            const cs = customSections.find(s => s.id === secDef.id);
+            if (cs) {
+                document.getElementById('input-sec-name').value = cs.name;
+                document.getElementById('input-sec-set').value = cs.setCode.toUpperCase();
+                document.getElementById('input-sec-range').value = `${cs.startNum}-${cs.endNum}`;
             } else {
                 const builtInDefaults = {
                     poster: { name: "Poster Art", set: "LTR", range: "731-750" },
@@ -1983,40 +1962,6 @@
 
         function closeAddSectionModal() {
             document.getElementById('add-section-modal').classList.add('hidden');
-        }
-
-        function openEditSectionModal(secDef) {
-            editingSectionId = secDef.id;
-            
-            document.getElementById('add-sec-modal-icon').innerText = "✏️";
-            document.getElementById('add-sec-modal-title').innerText = "EDIT BINDER SECTION";
-            document.getElementById('add-sec-modal-desc').innerText = "Modify section name, set code, or number range.";
-            document.getElementById('btn-add-sec-confirm').innerText = "Save Changes";
-
-            const errEl = document.getElementById('add-sec-error');
-            errEl.innerText = '';
-            errEl.classList.add('hidden');
-
-            const cs = customSections.find(s => s.id === secDef.id);
-            if (cs) {
-                document.getElementById('input-sec-name').value = cs.name;
-                document.getElementById('input-sec-set').value = cs.setCode.toUpperCase();
-                document.getElementById('input-sec-range').value = `${cs.startNum}-${cs.endNum}`;
-            } else {
-                const builtInDefaults = {
-                    poster: { name: "Poster Art", set: "LTR", range: "731-750" },
-                    realms: { name: "Ring Showcase", set: "LTR", range: "794-823" },
-                    bookcover: { name: "Book Cover Art", set: "HOB", range: "275-284" },
-                    dragon: { name: "Dragon Hoard", set: "HOB", range: "250-274" },
-                    grails: { name: "Vault Grails", set: "CUSTOM", range: "1-100" }
-                };
-                const d = builtInDefaults[secDef.id] || { name: secDef.label, set: "LTR", range: "1-20" };
-                document.getElementById('input-sec-name').value = d.name;
-                document.getElementById('input-sec-set').value = d.set;
-                document.getElementById('input-sec-range').value = d.range;
-            }
-
-            document.getElementById('add-section-modal').classList.remove('hidden');
         }
 
         function handleCreateOrSaveSection() {
