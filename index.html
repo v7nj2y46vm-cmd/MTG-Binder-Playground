@@ -32,6 +32,16 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #d4af37;
         }
+        /* Hold timer progress pulse animation */
+        .holding-active {
+            animation: holdPulse 3s linear forwards;
+            position: relative;
+            overflow: hidden;
+        }
+        @keyframes holdPulse {
+            0% { box-shadow: inset 0 0 0 0 rgba(225, 29, 72, 0); }
+            100% { box-shadow: inset 0 0 0 100px rgba(225, 29, 72, 0.4); border-color: #f43f5e; }
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between overflow-x-hidden">
@@ -82,7 +92,7 @@
                     🏆 COLLECTION STATS
                 </h2>
 
-                <div class="space-y-4">
+                <div class="space-y-4" id="stats-rows-container">
                     <!-- Global Progress Bar -->
                     <div>
                         <div class="flex justify-between text-xs text-gray-400 mb-1 font-semibold">
@@ -94,7 +104,7 @@
                         </div>
                     </div>
 
-                    <!-- Poster Art Progress -->
+                    <!-- Built-in progress rows -->
                     <div id="stat-row-poster" class="pt-2 border-t border-gray-800/60">
                         <div class="flex justify-between text-xs text-gray-400 mb-1">
                             <span>Poster Art (Traditional Foil)</span>
@@ -105,7 +115,6 @@
                         </div>
                     </div>
 
-                    <!-- Ring Showcase Progress -->
                     <div id="stat-row-realms" class="pt-2">
                         <div class="flex justify-between text-xs text-gray-400 mb-1">
                             <span>Ring Showcase (Surge Foil)</span>
@@ -116,7 +125,6 @@
                         </div>
                     </div>
 
-                    <!-- Book Cover Progress -->
                     <div id="stat-row-bookcover" class="pt-2">
                         <div class="flex justify-between text-xs text-gray-400 mb-1">
                             <span>Book Cover (Surge Foil)</span>
@@ -127,7 +135,6 @@
                         </div>
                     </div>
 
-                    <!-- Dragon Hoard Progress -->
                     <div id="stat-row-dragon" class="pt-2">
                         <div class="flex justify-between text-xs text-gray-400 mb-1">
                             <span>Dragon Hoard (Surge Foil)</span>
@@ -138,7 +145,6 @@
                         </div>
                     </div>
 
-                    <!-- Grails Progress -->
                     <div id="stat-row-grails" class="pt-2 border-t border-gray-800/60">
                         <div class="flex justify-between text-xs text-gray-400 mb-1">
                             <span>👑 Vault Grails Progress</span>
@@ -148,36 +154,29 @@
                             <div id="bar-grails-progress" class="bg-purple-500 h-full transition-all duration-500" style="width: 0%"></div>
                         </div>
                     </div>
+
+                    <!-- Dynamic container for custom section stats -->
+                    <div id="custom-stats-container"></div>
                 </div>
             </div>
 
             <!-- Section Selector Controller -->
             <div class="p-5 rounded-2xl border border-gray-800/80 bg-gray-900/40 backdrop-blur-md shadow-xl flex flex-col gap-4">
-                <h2 class="text-md font-bold fantasy-title tracking-wider text-amber-400 flex items-center gap-2">
-                    📂 BINDER SECTION SELECTOR
-                </h2>
+                <div class="flex items-center justify-between">
+                    <h2 class="text-md font-bold fantasy-title tracking-wider text-amber-400 flex items-center gap-2">
+                        📂 BINDER SECTION SELECTOR
+                    </h2>
+                    <!-- Add Custom Section Plus Button -->
+                    <button id="btn-add-section-open" class="px-2.5 py-1 rounded-lg border border-amber-500/40 bg-amber-950/30 hover:bg-amber-900/50 text-amber-300 font-bold text-xs tracking-wider transition-all flex items-center gap-1 shadow-md active:scale-95" title="Add Custom Section">
+                        <span>➕</span> <span class="hidden sm:inline text-[10px]">NEW</span>
+                    </button>
+                </div>
 
-                <div class="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
-                    <button id="tab-poster" class="px-1 py-2.5 rounded-xl border border-amber-500/30 bg-amber-950/20 hover:bg-amber-950/30 text-amber-300 font-semibold text-[10px] tracking-wider transition-all shadow-md flex flex-col items-center justify-center gap-1 text-center">
-                        🎨 POSTER
-                        <span class="text-[8px] text-gray-400 font-normal">Traditional</span>
-                    </button>
-                    <button id="tab-realms" class="px-1 py-2.5 rounded-xl border border-gray-850 bg-gray-950/50 hover:bg-gray-800 text-gray-400 font-semibold text-[10px] tracking-wider transition-all flex flex-col items-center justify-center gap-1 text-center">
-                        💍 SHOWCASE
-                        <span class="text-[8px] text-gray-500 font-normal">Surge</span>
-                    </button>
-                    <button id="tab-bookcover" class="px-1 py-2.5 rounded-xl border border-gray-850 bg-gray-950/50 hover:bg-gray-800 text-gray-400 font-semibold text-[10px] tracking-wider transition-all flex flex-col items-center justify-center gap-1 text-center">
-                        📖 COVERS
-                        <span class="text-[8px] text-gray-500 font-normal">Book Art</span>
-                    </button>
-                    <button id="tab-dragon" class="px-1 py-2.5 rounded-xl border border-gray-850 bg-gray-950/50 hover:bg-gray-800 text-gray-400 font-semibold text-[10px] tracking-wider transition-all flex flex-col items-center justify-center gap-1 text-center">
-                        🐉 HOARDS
-                        <span class="text-[8px] text-gray-500 font-normal">Frame</span>
-                    </button>
-                    <button id="tab-grails" class="px-1 py-2.5 rounded-xl border border-gray-850 bg-gray-950/50 hover:bg-gray-800 text-gray-400 font-semibold text-[10px] tracking-wider transition-all flex flex-col items-center justify-center gap-1 text-center col-span-2 sm:col-span-1">
-                        👑 GRAILS
-                        <span class="text-[8px] text-gray-500 font-normal">Custom</span>
-                    </button>
+                <p class="text-[10px] text-gray-500 italic">Tip: Click section to switch view. Click & hold 3s to edit or delete.</p>
+
+                <!-- Section Selector Tabs Grid (Renders Built-in + Custom Tabs) -->
+                <div id="section-tabs-container" class="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                    <!-- Dynamic rendering via JS -->
                 </div>
 
                 <!-- Live Search -->
@@ -300,16 +299,99 @@
         </section>
     </main>
 
+    <!-- Modals Workspace -->
+
+    <!-- Add/Edit Section Modal -->
+    <div id="add-section-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 hidden">
+        <div class="bg-gray-900 border border-amber-500/40 max-w-md w-full p-6 rounded-2xl shadow-2xl flex flex-col gap-4 relative">
+            <button id="add-sec-close" class="absolute top-3 right-3 text-gray-400 hover:text-white p-2">✕</button>
+            
+            <div class="flex items-center gap-2">
+                <span class="text-xl">➕</span>
+                <h3 class="text-lg font-bold fantasy-title text-amber-400">ADD NEW BINDER SECTION</h3>
+            </div>
+            
+            <p class="text-xs text-gray-400">Create a custom card checklist by set code and collector number range.</p>
+
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1">Section Name (Free Text)</label>
+                    <input type="text" id="input-sec-name" placeholder="e.g. Hobbit Extended Frames" class="w-full bg-gray-950 border border-gray-800 focus:border-amber-500 text-xs text-gray-200 px-3 py-2 rounded-xl focus:outline-none">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-300 mb-1">Set Code</label>
+                        <input type="text" id="input-sec-set" placeholder="e.g. HOB or LTR" class="w-full bg-gray-950 border border-gray-800 focus:border-amber-500 text-xs text-gray-200 px-3 py-2 rounded-xl uppercase focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-300 mb-1">Number Range</label>
+                        <input type="text" id="input-sec-range" placeholder="e.g. 250-274" class="w-full bg-gray-950 border border-gray-800 focus:border-amber-500 text-xs text-gray-200 px-3 py-2 rounded-xl focus:outline-none">
+                    </div>
+                </div>
+            </div>
+
+            <div id="add-sec-error" class="text-xs text-rose-400 font-medium hidden"></div>
+
+            <div class="flex gap-3 pt-2">
+                <button id="btn-add-sec-confirm" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-600 text-black font-bold text-xs shadow-lg hover:scale-[1.01] transition-all">
+                    Create Section
+                </button>
+                <button id="btn-add-sec-cancel" class="px-4 py-2.5 rounded-xl bg-gray-800 text-gray-300 hover:text-white text-xs border border-gray-700">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section Options Modal (Edit vs Delete) -->
+    <div id="section-options-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+        <div class="bg-gray-900 border border-amber-500/40 max-w-md w-full p-6 rounded-2xl shadow-2xl text-center relative">
+            <button id="sec-opt-close" class="absolute top-3 right-3 text-gray-400 hover:text-white p-2">✕</button>
+            <div class="text-3xl mb-2">⚙️</div>
+            <h3 id="sec-opt-title" class="text-lg font-bold fantasy-title text-amber-400 mb-1">MANAGE SECTION</h3>
+            <p id="sec-opt-desc" class="text-xs text-gray-400 mb-6">Choose whether to edit details or remove this section.</p>
+            <div class="flex flex-col gap-3">
+                <button id="btn-sec-opt-edit" class="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs shadow-lg transition-all flex items-center justify-center gap-2">
+                    ✏️ EDIT SECTION DETAILS
+                </button>
+                <button id="btn-sec-opt-delete" class="w-full py-3 rounded-xl bg-rose-950/40 border border-rose-800/60 text-rose-300 hover:bg-rose-900 hover:text-white font-bold text-xs transition-all flex items-center justify-center gap-2">
+                    🗑️ DELETE SECTION
+                </button>
+                <button id="btn-sec-opt-cancel" class="w-full py-2.5 rounded-xl bg-gray-800 border border-gray-700 text-gray-300 hover:text-white text-xs transition-all">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Delete Section Modal -->
+    <div id="delete-section-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+        <div class="bg-gray-900 border border-rose-600/50 max-w-md w-full p-6 rounded-2xl shadow-2xl text-center">
+            <div class="text-3xl mb-2">🗑️</div>
+            <h3 class="text-lg font-bold fantasy-title text-rose-400 mb-2">DELETE BINDER SECTION?</h3>
+            <p id="delete-sec-desc" class="text-xs text-gray-300 mb-6 leading-relaxed">
+                Are you sure you wish to delete this section and all associated collection data?
+            </p>
+            <div class="flex gap-3">
+                <button id="btn-delete-sec-confirm" class="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-lg shadow-rose-950/40 transition-all">
+                    Yes, Delete Section
+                </button>
+                <button id="btn-delete-sec-cancel" class="flex-1 py-2.5 rounded-xl bg-gray-800 border border-gray-700 text-gray-300 hover:text-white text-xs transition-all">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Card Inspector Modal -->
     <div id="card-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-start sm:items-center justify-center p-3 sm:p-4 overflow-y-auto hidden opacity-0 transition-opacity duration-300">
         <div id="modal-container" class="bg-gray-900 border border-gray-800 max-w-4xl w-full rounded-2xl shadow-2xl overflow-y-auto max-h-[90dvh] my-auto grid grid-cols-1 md:grid-cols-12 scale-90 transition-transform duration-300 relative">
 
-            <!-- Floating Close Button for Mobile & Desktop -->
             <button id="modal-close" class="absolute top-3 right-3 z-20 p-2 text-gray-400 hover:text-white bg-gray-800/80 hover:bg-gray-700 rounded-full transition-colors border border-gray-700/50 shadow-md">
                 ✕
             </button>
 
-            <!-- Card Artwork -->
             <div class="md:col-span-5 bg-black/50 p-4 sm:p-6 flex flex-col justify-center items-center relative min-h-[240px] sm:min-h-[360px]">
                 <div class="w-full max-w-[200px] sm:max-w-[280px] aspect-[2.5/3.5] relative rounded-xl shadow-2xl overflow-hidden border border-gray-800 bg-gray-900">
                     <div id="modal-loading-card" class="absolute inset-0 flex items-center justify-center bg-gray-950 text-amber-400">
@@ -322,7 +404,6 @@
                 </div>
             </div>
 
-            <!-- Card Details & Market Prices -->
             <div class="md:col-span-7 p-4 sm:p-6 md:p-8 flex flex-col justify-between bg-gradient-to-b from-gray-900 to-gray-950">
                 <div>
                     <div class="flex justify-between items-start gap-4 mb-3 pr-8 md:pr-0">
@@ -461,8 +542,9 @@
         </div>
     </footer>
 
+    <!-- JavaScript Application Logic -->
     <script>
-        // Core data structures
+        // Core built-in data structures
         const POSTER_CARDS = [
             { id: 731, name: "Dawn of a New Age", set: "ltr", num: "731", rarity: "Mythic" },
             { id: 732, name: "Gandalf the White", set: "ltr", num: "732", rarity: "Mythic" },
@@ -519,22 +601,25 @@
             { id: 823, name: "Tom Bombadil", set: "ltr", num: "823", rarity: "Mythic" }
         ];
 
-        // 10 Book Cover Art cards in surge foil (#276 to #285)
+        // 10 Book Cover Art cards in surge foil (#275 to #284)
         const BOOKCOVER_CARDS = [
+            { id: 275, name: "Unrevealed Book Cover #275", set: "hob", num: "275", rarity: "Rare" },
             { id: 276, name: "The Lord of the Eagles", set: "hob", num: "276", rarity: "Rare" },
             { id: 277, name: "Gollum, Riddle Master", set: "hob", num: "277", rarity: "Mythic" },
             { id: 278, name: "Gandalf, Goblins' Bane // Flameshape", set: "hob", num: "278", rarity: "Mythic" },
             { id: 279, name: "Thorin, Mountain-king", set: "hob", num: "279", rarity: "Mythic" },
             { id: 280, name: "Bard, King of Dale", set: "hob", num: "280", rarity: "Mythic" },
-            { id: 281, name: "Unrevealed Book Cover #281", set: "hob", num: "281", rarity: "Rare" },
-            { id: 282, name: "Thranduil, the Elvenking", set: "hob", num: "282", rarity: "Mythic" },
-            { id: 283, name: "The Arkenstone // Seek the Heart", set: "hob", num: "283", rarity: "Mythic" },
-            { id: 284, name: "The Lonely Mountain", set: "hob", num: "284", rarity: "Rare" },
-            { id: 285, name: "Unrevealed Book Cover #285", set: "hob", num: "285", rarity: "Rare" }
+            { id: 281, name: "Thranduil, the Elvenking", set: "hob", num: "281", rarity: "Mythic" },
+            { id: 282, name: "The Arkenstone // Seek the Heart", set: "hob", num: "282", rarity: "Mythic" },
+            { id: 283, name: "The Lonely Mountain", set: "hob", num: "283", rarity: "Rare" },
+            { id: 284, name: "Unrevealed Book Cover #284", set: "hob", num: "284", rarity: "Rare" }
         ];
 
-        // 25 Dragon Hoard Frame cards in surge foil (#253 to #277)
+        // 25 Dragon Hoard Frame cards in surge foil (#250 to #274)
         const DRAGON_CARDS = [
+            { id: 250, name: "Unrevealed Dragon Hoard #250", set: "hob", num: "250", rarity: "Rare" },
+            { id: 251, name: "Unrevealed Dragon Hoard #251", set: "hob", num: "251", rarity: "Rare" },
+            { id: 252, name: "Unrevealed Dragon Hoard #252", set: "hob", num: "252", rarity: "Rare" },
             { id: 253, name: "The Queen of Dale", set: "hob", num: "253", rarity: "Mythic" },
             { id: 254, name: "Bilbo, Luckwearer // Burglar's Plot", set: "hob", num: "254", rarity: "Mythic" },
             { id: 255, name: "Bilbo, Thief in the Night", set: "hob", num: "255", rarity: "Mythic" },
@@ -556,14 +641,12 @@
             { id: 271, name: "My Precious // Allure of Power", set: "hob", num: "271", rarity: "Mythic" },
             { id: 272, name: "Unrevealed Dragon Hoard #272", set: "hob", num: "272", rarity: "Rare" },
             { id: 273, name: "Sting, Bilbo's Sword", set: "hob", num: "273", rarity: "Rare" },
-            { id: 274, name: "Unrevealed Dragon Hoard #274", set: "hob", num: "274", rarity: "Rare" },
-            { id: 275, name: "Unrevealed Dragon Hoard #275", set: "hob", num: "275", rarity: "Rare" },
-            { id: 276, name: "Unrevealed Dragon Hoard #276", set: "hob", num: "276", rarity: "Rare" },
-            { id: 277, name: "Unrevealed Dragon Hoard #277", set: "hob", num: "277a", rarity: "Rare" }
+            { id: 274, name: "Unrevealed Dragon Hoard #274", set: "hob", num: "274", rarity: "Rare" }
         ];
 
-        // Dynamic Live Database-Driven Grails List
+        // Dynamic Grails and Dynamic Custom Sections
         let grailsCollection = [];
+        let customSections = [];
 
         // App State
         let collection = {};
@@ -572,23 +655,29 @@
         let searchFilter = '';
         let statusFilter = 'all';
         let isCoverMode = false; 
-        let layoutType = '2x2'; // grid: 2x2 or 3x3
+        let layoutType = '2x2';
         let viewMode = 'chase'; // 'chase' or 'archive'
 
         // Cache for loaded MTG card images
         const imagePool = {};
 
-        // Visual animation variables
+        // Animation state
         let hoverCardIndex = -1;
         let mouseX = 0;
         let mouseY = 0;
         let lastTime = 0;
         let foilAnimOffset = 0;
 
-        // Live fetched search results for Grails Selector
+        // Search state
         let currentSearchCards = [];
 
-        // Image asset loader for authentic One Ring script
+        // Long Press & Section Editing Handler variables
+        let holdTimer = null;
+        let holdTargetSecId = null;
+        let currentOptionsSecDef = null;
+        let editingSectionId = null;
+
+        // One Ring SVG/Image canvas processor
         const ringScriptImg = new Image();
         ringScriptImg.src = 'image_30c465.png';
         let ringScriptLoaded = false;
@@ -603,7 +692,6 @@
 
             pCtx.filter = 'invert(1)';
             pCtx.drawImage(ringScriptImg, 0, 0, size, size);
-
             pCtx.filter = 'none';
             pCtx.globalCompositeOperation = 'source-in';
 
@@ -615,7 +703,6 @@
 
             pCtx.fillStyle = grad;
             pCtx.fillRect(0, 0, size, size);
-
             pCtx.globalCompositeOperation = 'source-over';
         };
 
@@ -623,7 +710,6 @@
         const canvas = document.getElementById('binder-canvas');
         const ctx = canvas.getContext('2d');
 
-        // Virtual coordinates of binder canvas
         const V_WIDTH = 1000;
         const V_HEIGHT = 1100;
 
@@ -639,7 +725,6 @@
             ctx.arcTo(x, y, x + w, y, r);
         }
 
-        // 2x2 vs 3x3 layout position generator with ample vertical spacing
         function getGridLayout() {
             if (layoutType === '2x2') {
                 return {
@@ -653,7 +738,7 @@
                         { x: 550, y: 610, col: 1, row: 1 }
                     ]
                 };
-            } else { // 3x3 Layout Mode
+            } else {
                 return {
                     cardWidth: 210,
                     cardHeight: 294,
@@ -673,21 +758,21 @@
             }
         }
 
-        // Initialize state
         function initApp() {
             const cached = localStorage.getItem('mtg_binder_collection');
             if (cached) {
                 try { collection = JSON.parse(cached); } catch(e) { collection = {}; }
-            } else {
-                collection = {};
-            }
+            } else { collection = {}; }
 
             const cachedGrails = localStorage.getItem('mtg_binder_grails');
             if (cachedGrails) {
                 try { grailsCollection = JSON.parse(cachedGrails); } catch(e) { grailsCollection = []; }
-            } else {
-                grailsCollection = [];
-            }
+            } else { grailsCollection = []; }
+
+            const cachedCustom = localStorage.getItem('mtg_binder_custom_sections');
+            if (cachedCustom) {
+                try { customSections = JSON.parse(cachedCustom); } catch(e) { customSections = []; }
+            } else { customSections = []; }
 
             const cachedLayout = localStorage.getItem('mtg_binder_layout_type');
             if (cachedLayout === '2x2' || cachedLayout === '3x3') {
@@ -698,6 +783,7 @@
             canvas.width = V_WIDTH;
             canvas.height = V_HEIGHT;
 
+            renderSectionTabs();
             updateStats();
             bindEvents();
             resizeCanvas();
@@ -719,51 +805,254 @@
                 return DRAGON_CARDS.length > 0 && DRAGON_CARDS.every(c => collection[`dragon-${c.id}`]);
             } else if (secKey === 'grails') {
                 return grailsCollection.length > 0 && grailsCollection.every(c => collection[`grails-${c.set}-${c.num}`]);
+            } else {
+                // Custom section check
+                const cs = customSections.find(s => s.id === secKey);
+                if (cs && cs.cards.length > 0) {
+                    return cs.cards.every(c => collection[`custom-${cs.id}-${c.set}-${c.num}`]);
+                }
             }
             return false;
         }
 
         function getVisibleSections() {
-            const allSections = ['poster', 'realms', 'bookcover', 'dragon', 'grails'];
-            return allSections.filter(sec => {
+            const allBuiltIn = ['poster', 'realms', 'bookcover', 'dragon', 'grails'];
+            const customKeys = customSections.map(s => s.id);
+            const allKeys = [...allBuiltIn, ...customKeys];
+
+            return allKeys.filter(sec => {
                 const complete = isSectionComplete(sec);
                 return viewMode === 'chase' ? !complete : complete;
             });
         }
 
-        function syncSectionVisibility() {
+        function renderSectionTabs() {
+            const container = document.getElementById('section-tabs-container');
+            container.innerHTML = '';
+
+            const builtInDefs = [
+                { id: 'poster', label: 'Poster Art', colorClass: 'border-amber-500/30 text-amber-300 bg-amber-950/20' },
+                { id: 'realms', label: 'Ring Showcase', colorClass: 'border-cyan-500/30 text-cyan-300 bg-cyan-950/20' },
+                { id: 'bookcover', label: 'Book Cover', colorClass: 'border-emerald-500/30 text-emerald-300 bg-emerald-950/20' },
+                { id: 'dragon', label: 'Dragon Hoard', colorClass: 'border-orange-500/30 text-orange-300 bg-orange-950/20' },
+                { id: 'grails', label: '👑 Vault Grails', colorClass: 'border-purple-500/40 text-purple-300 bg-purple-950/20 col-span-2 sm:col-span-1' }
+            ];
+
+            const customDefs = customSections.map(cs => ({
+                id: cs.id,
+                label: `📂 ${cs.name}`,
+                colorClass: 'border-indigo-500/40 text-indigo-300 bg-indigo-950/20',
+                isCustom: true
+            }));
+
+            const allDefs = [...builtInDefs, ...customDefs];
+
+            allDefs.forEach(secDef => {
+                const btn = document.createElement('button');
+                btn.id = `tab-${secDef.id}`;
+                btn.className = `px-1 py-2.5 rounded-xl border border-gray-850 bg-gray-950/50 hover:bg-gray-800 text-gray-400 font-semibold text-[10px] tracking-wider transition-all flex flex-col items-center justify-center gap-1 text-center select-none`;
+                btn.innerText = secDef.label;
+
+                // Tab Click Handler
+                btn.addEventListener('click', (e) => {
+                    if (btn.dataset.cancelledByHold === 'true') {
+                        delete btn.dataset.cancelledByHold;
+                        return;
+                    }
+                    switchSection(secDef.id);
+                });
+
+                // Long Press (3s) Mouse & Touch Event Listeners
+                btn.addEventListener('mousedown', () => startHoldTimer(secDef, btn));
+                btn.addEventListener('mouseup', () => cancelHoldTimer());
+                btn.addEventListener('mouseleave', () => cancelHoldTimer());
+
+                btn.addEventListener('touchstart', (e) => {
+                    startHoldTimer(secDef, btn);
+                }, { passive: true });
+                btn.addEventListener('touchend', () => cancelHoldTimer());
+                btn.addEventListener('touchcancel', () => cancelHoldTimer());
+
+                container.appendChild(btn);
+            });
+
+            syncSectionVisibility();
+        }
+
+        // Long Press / Hold Timer (3 seconds to manage section)
+        function startHoldTimer(secDef, btn) {
+            cancelHoldTimer();
+            holdTargetSecId = secDef.id;
+
+            btn.classList.add('holding-active');
+
+            holdTimer = setTimeout(() => {
+                btn.classList.remove('holding-active');
+                btn.dataset.cancelledByHold = 'true';
+                if (navigator.vibrate) navigator.vibrate(100);
+                openSectionOptionsModal(secDef);
+            }, 3000);
+        }
+
+        function cancelHoldTimer() {
+            if (holdTimer) {
+                clearTimeout(holdTimer);
+                holdTimer = null;
+            }
+            if (holdTargetSecId) {
+                const btn = document.getElementById(`tab-${holdTargetSecId}`);
+                if (btn) btn.classList.remove('holding-active');
+                holdTargetSecId = null;
+            }
+        }
+
+        function openSectionOptionsModal(secDef) {
+            currentOptionsSecDef = secDef;
+            const modal = document.getElementById('section-options-modal');
+            const title = document.getElementById('sec-opt-title');
+            const desc = document.getElementById('sec-opt-desc');
+
+            const cleanName = secDef.isCustom ? secDef.label.replace('📂 ', '') : secDef.label;
+            title.innerText = `MANAGE: ${cleanName.toUpperCase()}`;
+            desc.innerText = `Choose whether to edit details or remove this section.`;
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeSectionOptionsModal() {
+            document.getElementById('section-options-modal').classList.add('hidden');
+        }
+
+        function openEditSectionModal(secDef) {
+            editingSectionId = secDef.id;
+            
+            document.getElementById('add-sec-close').previousElementSibling.children[0].innerText = "✏️";
+            document.getElementById('add-sec-close').nextElementSibling.children[1].innerText = "EDIT BINDER SECTION";
+            document.getElementById('add-sec-close').nextElementSibling.nextElementSibling.innerText = "Modify section name, set code, or number range.";
+            document.getElementById('btn-add-sec-confirm').innerText = "Save Changes";
+
+            const errEl = document.getElementById('add-sec-error');
+            errEl.innerText = '';
+            errEl.classList.add('hidden');
+
+            if (secDef.isCustom) {
+                const cs = customSections.find(s => s.id === secDef.id);
+                if (cs) {
+                    document.getElementById('input-sec-name').value = cs.name;
+                    document.getElementById('input-sec-set').value = cs.setCode.toUpperCase();
+                    document.getElementById('input-sec-range').value = `${cs.startNum}-${cs.endNum}`;
+                }
+            } else {
+                const builtInDefaults = {
+                    poster: { name: "Poster Art", set: "LTR", range: "731-750" },
+                    realms: { name: "Ring Showcase", set: "LTR", range: "794-823" },
+                    bookcover: { name: "Book Cover Art", set: "HOB", range: "275-284" },
+                    dragon: { name: "Dragon Hoard", set: "HOB", range: "250-274" },
+                    grails: { name: "Vault Grails", set: "CUSTOM", range: "1-100" }
+                };
+                const d = builtInDefaults[secDef.id] || { name: secDef.label, set: "LTR", range: "1-20" };
+                document.getElementById('input-sec-name').value = d.name;
+                document.getElementById('input-sec-set').value = d.set;
+                document.getElementById('input-sec-range').value = d.range;
+            }
+
+            document.getElementById('add-section-modal').classList.remove('hidden');
+        }
+
+        function promptDeleteSectionModal(secDef) {
+            const modal = document.getElementById('delete-section-modal');
+            const desc = document.getElementById('delete-sec-desc');
+            const nameStr = secDef.isCustom ? secDef.label.replace('📂 ', '') : secDef.label;
+            desc.innerText = `Are you sure you wish to delete the section "${nameStr}" and all associated collection data?`;
+
+            modal.classList.remove('hidden');
+
+            document.getElementById('btn-delete-sec-confirm').onclick = () => {
+                modal.classList.add('hidden');
+                executeDeleteSection(secDef.id);
+            };
+        }
+
+        function executeDeleteSection(secId) {
+            customSections = customSections.filter(s => s.id !== secId);
+
+            Object.keys(collection).forEach(k => {
+                if (k.startsWith(`${secId}-`) || k.startsWith(`custom-${secId}-`)) {
+                    delete collection[k];
+                }
+            });
+
+            renderSectionTabs();
+            updateStats();
+            updatePaginationUI();
+        }
+
+        function updateTabStyles() {
             const visible = getVisibleSections();
 
-            const tabs = {
-                poster: document.getElementById('tab-poster'),
-                realms: document.getElementById('tab-realms'),
-                bookcover: document.getElementById('tab-bookcover'),
-                dragon: document.getElementById('tab-dragon'),
-                grails: document.getElementById('tab-grails')
-            };
+            const allBtns = document.querySelectorAll('#section-tabs-container button');
+            allBtns.forEach(btn => {
+                const secId = btn.id.replace('tab-', '');
+                const isActive = activeSection === secId;
 
-            const statRows = {
-                poster: document.getElementById('stat-row-poster'),
-                realms: document.getElementById('stat-row-realms'),
-                bookcover: document.getElementById('stat-row-bookcover'),
-                dragon: document.getElementById('stat-row-dragon'),
-                grails: document.getElementById('stat-row-grails')
-            };
+                const baseClass = "px-1 py-2.5 rounded-xl border font-semibold text-[10px] tracking-wider transition-all flex flex-col items-center justify-center gap-1 text-center select-none";
+                const activeClass = "shadow-md border-amber-500/40 bg-amber-950/20 text-amber-300";
+                const inactiveClass = "border-gray-850 bg-gray-950/50 hover:bg-gray-800 text-gray-400";
 
-            Object.keys(tabs).forEach(sec => {
-                if (tabs[sec]) {
-                    if (visible.includes(sec)) {
-                        tabs[sec].style.display = 'flex';
+                btn.className = `${baseClass} ${isActive ? activeClass : inactiveClass}`;
+            });
+
+            const searchWidget = document.getElementById('grails-search-widget');
+            if (searchWidget) {
+                if (activeSection === 'grails') {
+                    searchWidget.classList.remove('hidden');
+                } else {
+                    searchWidget.classList.add('hidden');
+                }
+            }
+
+            const label = document.getElementById('binder-current-label');
+            const statusDot = document.getElementById('binder-status-dot');
+
+            if (label && statusDot) {
+                if (activeSection === 'poster') {
+                    label.innerText = "Poster Art (Traditional Foil)";
+                    statusDot.className = "w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse";
+                } else if (activeSection === 'realms') {
+                    label.innerText = "Ring Showcase (Surge Foil)";
+                    statusDot.className = "w-2.5 h-2.5 rounded-full bg-cyan-500 animate-pulse";
+                } else if (activeSection === 'bookcover') {
+                    label.innerText = "The Hobbit Book Cover (Surge Foil)";
+                    statusDot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse";
+                } else if (activeSection === 'dragon') {
+                    label.innerText = "The Hobbit Dragon Hoard (Surge Foil)";
+                    statusDot.className = "w-2.5 h-2.5 rounded-full bg-orange-500 animate-pulse";
+                } else if (activeSection === 'grails') {
+                    label.innerText = "Vault Grails (Cosmic Holographic)";
+                    statusDot.className = "w-2.5 h-2.5 rounded-full bg-purple-500 animate-pulse";
+                } else {
+                    const cs = customSections.find(s => s.id === activeSection);
+                    if (cs) {
+                        label.innerText = `${cs.name} (${cs.setCode.toUpperCase()} #${cs.startNum}-${cs.endNum})`;
+                        statusDot.className = "w-2.5 h-2.5 rounded-full bg-indigo-500 animate-pulse";
                     } else {
-                        tabs[sec].style.display = 'none';
+                        label.innerText = viewMode === 'chase' ? "All Chase Collections Complete" : "No Archived Collections";
+                        statusDot.className = "w-2.5 h-2.5 rounded-full bg-gray-500";
                     }
                 }
-                if (statRows[sec]) {
-                    if (visible.includes(sec)) {
-                        statRows[sec].style.display = 'block';
-                    } else {
-                        statRows[sec].style.display = 'none';
-                    }
+            }
+        }
+
+        function syncSectionVisibility() {
+            const visible = getVisibleSections();
+            const allBtns = document.querySelectorAll('#section-tabs-container button');
+
+            allBtns.forEach(btn => {
+                const secId = btn.id.replace('tab-', '');
+                if (visible.includes(secId)) {
+                    btn.style.display = 'flex';
+                } else {
+                    btn.style.display = 'none';
                 }
             });
 
@@ -779,94 +1068,6 @@
                 switchSection(visible[0]);
             } else {
                 updateTabStyles();
-            }
-        }
-
-        function triggerVictoryCelebration(secName) {
-            const modal = document.getElementById('victory-modal');
-            const subtitle = document.getElementById('victory-modal-subtitle');
-            const body = document.getElementById('victory-modal-body');
-
-            subtitle.innerText = `You have completed the entire ${secName} collection!`;
-            
-            const quotes = [
-                '"By the light of Eärendil and the ancient fires of Erebor, your vault shines with complete triumph!"',
-                '"A masterwork fit for the vaults of Minas Tirith! Every scroll in this section is accounted for!"',
-                '"Not even Smaug\'s dragon-hoard holds a collection as glorious as the one you have assembled!"',
-                '"From Bilbo\'s study to Rivendell\'s archives, songs shall be sung of your dedication!"'
-            ];
-            body.innerText = quotes[Math.floor(Math.random() * quotes.length)];
-
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                modal.classList.remove('opacity-0');
-            }, 10);
-        }
-
-        let pendingCompletedSection = null;
-
-        function closeVictoryModal() {
-            const modal = document.getElementById('victory-modal');
-            modal.classList.add('opacity-0');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-                if (pendingCompletedSection) {
-                    pendingCompletedSection = null;
-                    updateStats(); // Move section to Archive Mode after claiming victory
-                }
-            }, 300);
-        }
-
-        let pendingCardToggle = null;
-
-        function promptBreakArchiveModal(card, toggleAction) {
-            pendingCardToggle = toggleAction;
-            const modal = document.getElementById('break-archive-modal');
-            const desc = document.getElementById('break-archive-desc');
-            desc.innerText = `"${card.name}" belongs to a 100% completed collection! Removing it will unseal the collection and return it to Chase Mode. Are you sure?`;
-            modal.classList.remove('hidden');
-        }
-
-        function closeBreakArchiveModal() {
-            document.getElementById('break-archive-modal').classList.add('hidden');
-            pendingCardToggle = null;
-        }
-
-        function handleCardOwnershipToggle(card) {
-            const targetSection = activeSection;
-            const key = targetSection === 'grails' ? `grails-${card.set}-${card.num}` : `${targetSection}-${card.id}`;
-            const isOwnedCurrently = !!collection[key];
-            const wasCompleteBefore = isSectionComplete(targetSection);
-
-            if (isOwnedCurrently && (viewMode === 'archive' || wasCompleteBefore)) {
-                promptBreakArchiveModal(card, () => {
-                    executeCardToggle(card, key, targetSection, wasCompleteBefore);
-                });
-            } else {
-                executeCardToggle(card, key, targetSection, wasCompleteBefore);
-            }
-        }
-
-        function executeCardToggle(card, key, targetSection, wasCompleteBefore) {
-            const newState = !collection[key];
-            collection[key] = newState;
-
-            const isCompleteNow = isSectionComplete(targetSection);
-
-            if (!wasCompleteBefore && isCompleteNow) {
-                pendingCompletedSection = targetSection;
-                updateStatsNumbersOnly();
-                
-                const sectionLabels = {
-                    poster: 'Poster Art',
-                    realms: 'Ring Showcase',
-                    bookcover: 'The Hobbit Book Cover',
-                    dragon: 'The Hobbit Dragon Hoard',
-                    grails: 'Vault Grails'
-                };
-                triggerVictoryCelebration(sectionLabels[targetSection] || 'Binder');
-            } else {
-                updateStats();
             }
         }
 
@@ -892,8 +1093,54 @@
             let ownedGrails = 0;
             grailsCollection.forEach(c => { if (collection[`grails-${c.set}-${c.num}`]) ownedGrails++; });
 
-            const ownedTotal = ownedPoster + ownedRealms + ownedBookcover + ownedDragon;
-            const totalFoil = totalPoster + totalRealms + totalBookcover + totalDragon;
+            let customTotal = 0;
+            let customOwnedTotal = 0;
+
+            const customStatsContainer = document.getElementById('custom-stats-container');
+            customStatsContainer.innerHTML = '';
+
+            customSections.forEach(cs => {
+                let csOwned = 0;
+                cs.cards.forEach(c => {
+                    if (collection[`custom-${cs.id}-${c.set}-${c.num}`]) csOwned++;
+                });
+                customTotal += cs.cards.length;
+                customOwnedTotal += csOwned;
+
+                const isComplete = isSectionComplete(cs.id);
+                const isVisible = viewMode === 'chase' ? !isComplete : isComplete;
+
+                if (isVisible) {
+                    const percent = Math.round((csOwned / cs.cards.length) * 100) || 0;
+                    const rowDiv = document.createElement('div');
+                    rowDiv.className = "pt-2 border-t border-gray-800/60";
+                    rowDiv.innerHTML = `
+                        <div class="flex justify-between text-xs text-gray-400 mb-1">
+                            <span>${cs.name} (${cs.setCode.toUpperCase()})</span>
+                            <span class="font-medium text-indigo-300">${csOwned}/${cs.cards.length}</span>
+                        </div>
+                        <div class="w-full bg-gray-950 rounded-full h-2 overflow-hidden">
+                            <div class="bg-indigo-500 h-full transition-all duration-500" style="width: ${percent}%"></div>
+                        </div>
+                    `;
+                    customStatsContainer.appendChild(rowDiv);
+                }
+            });
+
+            const visibleSections = getVisibleSections();
+            const setRowVisibility = (rowId, secId) => {
+                const el = document.getElementById(rowId);
+                if (el) el.style.display = visibleSections.includes(secId) ? 'block' : 'none';
+            };
+
+            setRowVisibility('stat-row-poster', 'poster');
+            setRowVisibility('stat-row-realms', 'realms');
+            setRowVisibility('stat-row-bookcover', 'bookcover');
+            setRowVisibility('stat-row-dragon', 'dragon');
+            setRowVisibility('stat-row-grails', 'grails');
+
+            const ownedTotal = ownedPoster + ownedRealms + ownedBookcover + ownedDragon + customOwnedTotal;
+            const totalFoil = totalPoster + totalRealms + totalBookcover + totalDragon + customTotal;
             const globalPercent = Math.round((ownedTotal / totalFoil) * 100) || 0;
 
             document.getElementById('txt-total-progress').innerText = `${globalPercent}% (${ownedTotal}/${totalFoil})`;
@@ -916,6 +1163,7 @@
 
             localStorage.setItem('mtg_binder_collection', JSON.stringify(collection));
             localStorage.setItem('mtg_binder_grails', JSON.stringify(grailsCollection));
+            localStorage.setItem('mtg_binder_custom_sections', JSON.stringify(customSections));
             localStorage.setItem('mtg_binder_layout_type', layoutType);
         }
 
@@ -935,13 +1183,24 @@
                 list = BOOKCOVER_CARDS;
             } else if (activeSection === 'dragon') {
                 list = DRAGON_CARDS;
-            } else {
+            } else if (activeSection === 'grails') {
                 list = grailsCollection;
+            } else {
+                const cs = customSections.find(s => s.id === activeSection);
+                list = cs ? cs.cards : [];
             }
 
             return list.filter(card => {
                 const matchSearch = card.name.toLowerCase().includes(searchFilter.toLowerCase());
-                const key = activeSection === 'grails' ? `grails-${card.set}-${card.num}` : `${activeSection}-${card.id}`;
+                let key;
+                if (['poster', 'realms', 'bookcover', 'dragon'].includes(activeSection)) {
+                    key = `${activeSection}-${card.id}`;
+                } else if (activeSection === 'grails') {
+                    key = `grails-${card.set}-${card.num}`;
+                } else {
+                    key = `custom-${activeSection}-${card.set}-${card.num}`;
+                }
+
                 const isOwned = !!collection[key];
                 const matchStatus = statusFilter === 'all' || 
                                     (statusFilter === 'owned' && isOwned) || 
@@ -1172,7 +1431,15 @@
                 ctx.stroke();
 
                 if (card) {
-                    const key = activeSection === 'grails' ? `grails-${card.set}-${card.num}` : `${activeSection}-${card.id}`;
+                    let key;
+                    if (['poster', 'realms', 'bookcover', 'dragon'].includes(activeSection)) {
+                        key = `${activeSection}-${card.id}`;
+                    } else if (activeSection === 'grails') {
+                        key = `grails-${card.set}-${card.num}`;
+                    } else {
+                        key = `custom-${activeSection}-${card.set}-${card.num}`;
+                    }
+
                     const isOwned = !!collection[key];
                     const imageSrc = `https://api.scryfall.com/cards/${card.set}/${card.num}?format=image&version=normal`;
 
@@ -1197,7 +1464,6 @@
 
                     if (cardImgObj.loaded && !cardImgObj.error) {
                         ctx.save();
-
                         if (!isOwned) {
                             ctx.filter = 'grayscale(100%) contrast(75%) brightness(60%)';
                         } else {
@@ -1214,13 +1480,11 @@
                             ctx.fillStyle = 'rgba(8, 10, 16, 0.78)';
                             ctx.fillRect(slot.x, slot.y, slotWidth, slotHeight);
                         }
-
                         ctx.restore();
 
                         if (isOwned) {
                             applyFoilShader(ctx, slot, card, slotWidth, slotHeight);
                         }
-
                         drawPlasticSleeveSheen(ctx, slot, slotWidth, slotHeight);
 
                     } else if (cardImgObj.loaded && cardImgObj.error) {
@@ -1254,8 +1518,7 @@
 
                         ctx.fillStyle = '#64748b';
                         ctx.font = '10px Inter';
-                        ctx.fillText(`HOB #${card.num}`, slot.x + slotWidth / 2, slot.y + slotHeight / 2 + 15);
-
+                        ctx.fillText(`${card.set.toUpperCase()} #${card.num}`, slot.x + slotWidth / 2, slot.y + slotHeight / 2 + 15);
                         ctx.restore();
 
                         if (isOwned) {
@@ -1290,7 +1553,6 @@
 
                     ctx.shadowColor = 'rgba(0,0,0,0.5)';
                     ctx.shadowBlur = 8;
-
                     ctx.fillStyle = isOwned ? '#10b981' : 'rgba(15, 23, 42, 0.85)';
                     ctx.beginPath();
                     ctx.arc(checkX, checkY, 14, 0, Math.PI*2);
@@ -1385,9 +1647,6 @@
             drawRoundRect(ctx, slot.x, slot.y, slotWidth, slotHeight, 10);
             ctx.clip();
 
-            const deltaX = hoverCardIndex !== -1 ? (mouseX - (slot.x + slotWidth/2)) / (slotWidth/2) : 0;
-            const deltaY = hoverCardIndex !== -1 ? (mouseY - (slot.y + slotHeight/2)) / (slotHeight/2) : 0;
-
             if (activeSection === 'poster') {
                 ctx.save();
                 ctx.globalCompositeOperation = 'color-dodge';
@@ -1416,70 +1675,8 @@
                 ctx.fillRect(slot.x, slot.y, slotWidth, slotHeight);
                 ctx.restore();
 
-                ctx.save();
-                ctx.globalCompositeOperation = 'overlay';
-                ctx.globalAlpha = 0.35;
-                const glossGrad = ctx.createLinearGradient(
-                    slot.x - slotWidth/2 + (offsetShift * 0.8), slot.y,
-                    slot.x + slotWidth/2 + (offsetShift * 0.8), slot.y + slotHeight
-                );
-                glossGrad.addColorStop(0, 'rgba(255,255,255,0)');
-                glossGrad.addColorStop(0.46, 'rgba(255,255,255,0)');
-                glossGrad.addColorStop(0.5, 'rgba(255,255,255,0.85)');
-                glossGrad.addColorStop(0.54, 'rgba(255,255,255,0)');
-                glossGrad.addColorStop(1, 'rgba(255,255,255,0)');
-                ctx.fillStyle = glossGrad;
-                ctx.fillRect(slot.x, slot.y, slotWidth, slotHeight);
-                ctx.restore();
-
-                if (hoverCardIndex !== -1) {
-                    ctx.save();
-                    ctx.globalCompositeOperation = 'color-dodge';
-                    const spotGrad = ctx.createRadialGradient(
-                        mouseX, mouseY, 20, 
-                        mouseX, mouseY, 220
-                    );
-                    spotGrad.addColorStop(0, 'rgba(255, 255, 255, 0.2)');
-                    spotGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
-                    ctx.fillStyle = spotGrad;
-                    ctx.fillRect(slot.x, slot.y, slotWidth, slotHeight);
-                    ctx.restore();
-                }
-
                 drawFoilSparkles(ctx, slot, card.id || 101, slotWidth, slotHeight);
 
-            } else if (activeSection === 'realms' || activeSection === 'bookcover' || activeSection === 'dragon') {
-                ctx.globalCompositeOperation = 'color-dodge';
-
-                const waveShift = (foilAnimOffset * 2.5);
-                ctx.lineWidth = 12;
-
-                for(let k = 0; k < 4; k++) {
-                    const pathGrad = ctx.createLinearGradient(slot.x, slot.y, slot.x + slotWidth, slot.y + slotHeight);
-                    pathGrad.addColorStop(0, 'rgba(0, 150, 255, 0.18)');
-                    pathGrad.addColorStop(0.5, 'rgba(255, 0, 220, 0.18)');
-                    pathGrad.addColorStop(1, 'rgba(255, 200, 0, 0.18)');
-
-                    ctx.strokeStyle = pathGrad;
-                    ctx.beginPath();
-
-                    const startY = slot.y + (k * 100) - 80 + (waveShift % 200);
-                    ctx.moveTo(slot.x, startY);
-
-                    ctx.bezierCurveTo(
-                        slot.x + slotWidth/3, startY - 40 + (deltaY * 50),
-                        slot.x + (slotWidth/3) * 2, startY + 80 - (deltaX * 50),
-                        slot.x + slotWidth, startY + 20
-                    );
-                    ctx.stroke();
-                }
-
-                const surgeSheen = ctx.createLinearGradient(slot.x, slot.y + slotHeight, slot.x + slotWidth, slot.y);
-                surgeSheen.addColorStop(0, 'rgba(0, 255, 255, 0.04)');
-                surgeSheen.addColorStop(0.5, 'rgba(100, 0, 255, 0.02)');
-                surgeSheen.addColorStop(1, 'rgba(255, 255, 0, 0.04)');
-                ctx.fillStyle = surgeSheen;
-                ctx.fillRect(slot.x, slot.y, slotWidth, slotHeight);
             } else {
                 ctx.save();
                 ctx.globalCompositeOperation = 'color-dodge';
@@ -1511,7 +1708,7 @@
             ctx.globalCompositeOperation = 'screen';
             ctx.fillStyle = '#ffffff';
 
-            const sparkleSeed = cardId * 999;
+            const sparkleSeed = (typeof cardId === 'number' ? cardId : 101) * 999;
             for (let i = 0; i < 3; i++) {
                 const px = slot.x + 30 + ((sparkleSeed * (i + 1) * 17) % (slotWidth - 60));
                 const py = slot.y + 30 + ((sparkleSeed * (i + 1) * 43) % (slotHeight - 60));
@@ -1627,9 +1824,7 @@
                 hoverCardIndex = foundIndex;
             });
 
-            canvas.addEventListener('mouseleave', () => {
-                hoverCardIndex = -1;
-            });
+            canvas.addEventListener('mouseleave', () => { hoverCardIndex = -1; });
 
             canvas.addEventListener('touchstart', (e) => {
                 const pos = getMousePos(e);
@@ -1675,7 +1870,32 @@
 
             window.addEventListener('resize', resizeCanvas);
 
-            // Modal Action Handlers
+            // Add Section Modal Handler
+            document.getElementById('btn-add-section-open').addEventListener('click', openAddSectionModal);
+            document.getElementById('add-sec-close').addEventListener('click', closeAddSectionModal);
+            document.getElementById('btn-add-sec-cancel').addEventListener('click', closeAddSectionModal);
+            document.getElementById('btn-add-sec-confirm').addEventListener('click', handleCreateOrSaveSection);
+
+            // Manage Section Options Modal Handlers
+            document.getElementById('sec-opt-close').addEventListener('click', closeSectionOptionsModal);
+            document.getElementById('btn-sec-opt-cancel').addEventListener('click', closeSectionOptionsModal);
+            
+            document.getElementById('btn-sec-opt-edit').addEventListener('click', () => {
+                closeSectionOptionsModal();
+                if (currentOptionsSecDef) openEditSectionModal(currentOptionsSecDef);
+            });
+
+            document.getElementById('btn-sec-opt-delete').addEventListener('click', () => {
+                closeSectionOptionsModal();
+                if (currentOptionsSecDef) promptDeleteSectionModal(currentOptionsSecDef);
+            });
+
+            // Delete Modal Handlers
+            document.getElementById('btn-delete-sec-cancel').addEventListener('click', () => {
+                document.getElementById('delete-section-modal').classList.add('hidden');
+            });
+
+            // Victory & Break Archive Modal Listeners
             document.getElementById('btn-victory-close').addEventListener('click', closeVictoryModal);
             document.getElementById('victory-modal').addEventListener('click', (e) => {
                 if (e.target === document.getElementById('victory-modal')) closeVictoryModal();
@@ -1690,24 +1910,20 @@
                 }
             });
 
+            // Toolbar Navigation
             document.getElementById('floating-arrow-prev').addEventListener('click', prevPage);
             document.getElementById('floating-arrow-next').addEventListener('click', nextPage);
-
             document.getElementById('btn-layout-toggle').addEventListener('click', toggleGridLayout);
             document.getElementById('btn-mode-toggle').addEventListener('click', toggleViewMode);
 
-            document.getElementById('tab-poster').addEventListener('click', () => switchSection('poster'));
-            document.getElementById('tab-realms').addEventListener('click', () => switchSection('realms'));
-            document.getElementById('tab-bookcover').addEventListener('click', () => switchSection('bookcover'));
-            document.getElementById('tab-dragon').addEventListener('click', () => switchSection('dragon'));
-            document.getElementById('tab-grails').addEventListener('click', () => switchSection('grails'));
-
+            // Grail Search
             document.getElementById('btn-grail-search').addEventListener('click', handleGrailSearch);
             document.getElementById('grail-search-input').addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') handleGrailSearch();
             });
             document.getElementById('btn-grail-add').addEventListener('click', handleAddGrail);
 
+            // Search and Filters
             document.getElementById('search-bar').addEventListener('input', (e) => {
                 searchFilter = e.target.value;
                 currentPageIndex = 0;
@@ -1718,20 +1934,18 @@
             document.getElementById('filt-owned').addEventListener('click', () => setFilter('owned'));
             document.getElementById('filt-missing').addEventListener('click', () => setFilter('missing'));
 
+            // Batch Actions
             document.getElementById('btn-fill-all').addEventListener('click', checkAllCards);
             document.getElementById('btn-clear-all').addEventListener('click', clearBinder);
 
+            // Cover Toggle
             document.getElementById('btn-cover-toggle').addEventListener('click', () => {
                 isCoverMode = !isCoverMode;
                 document.getElementById('cover-toggle-text').innerText = isCoverMode ? "Open Binder" : "Close Binder";
                 updatePaginationUI();
             });
 
-            document.getElementById('modal-close').addEventListener('click', closeCardModal);
-            document.getElementById('card-modal').addEventListener('click', (e) => {
-                if (e.target === document.getElementById('card-modal')) closeCardModal();
-            });
-
+            // Backup Utilities
             document.getElementById('btn-export-backup').addEventListener('click', openExportModal);
             document.getElementById('btn-backup-close').addEventListener('click', closeBackupModal);
             document.getElementById('btn-backup-copy').addEventListener('click', copyBackupText);
@@ -1739,6 +1953,220 @@
             document.getElementById('btn-import-backup').addEventListener('click', openImportModal);
             document.getElementById('btn-import-close').addEventListener('click', closeImportModal);
             document.getElementById('btn-import-confirm').addEventListener('click', confirmImportSave);
+
+            // Modal Close Controls
+            document.getElementById('modal-close').addEventListener('click', closeCardModal);
+            document.getElementById('card-modal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('card-modal')) closeCardModal();
+            });
+        }
+
+        function openAddSectionModal() {
+            editingSectionId = null;
+
+            document.getElementById('add-sec-close').previousElementSibling.children[0].innerText = "➕";
+            document.getElementById('add-sec-close').nextElementSibling.children[1].innerText = "ADD NEW BINDER SECTION";
+            document.getElementById('add-sec-close').nextElementSibling.nextElementSibling.innerText = "Create a custom card checklist by set code and collector number range.";
+            document.getElementById('btn-add-sec-confirm').innerText = "Create Section";
+
+            document.getElementById('input-sec-name').value = '';
+            document.getElementById('input-sec-set').value = '';
+            document.getElementById('input-sec-range').value = '';
+            const errEl = document.getElementById('add-sec-error');
+            errEl.innerText = '';
+            errEl.classList.add('hidden');
+
+            document.getElementById('add-section-modal').classList.remove('hidden');
+        }
+
+        function closeAddSectionModal() {
+            document.getElementById('add-section-modal').classList.add('hidden');
+        }
+
+        function handleCreateOrSaveSection() {
+            const name = document.getElementById('input-sec-name').value.trim();
+            const setCode = document.getElementById('input-sec-set').value.trim().toLowerCase();
+            const rangeStr = document.getElementById('input-sec-range').value.trim();
+            const errEl = document.getElementById('add-sec-error');
+
+            if (!name || !setCode || !rangeStr) {
+                errEl.innerText = "⚠️ Please fill out all required fields!";
+                errEl.classList.remove('hidden');
+                return;
+            }
+
+            let startNum, endNum;
+            if (rangeStr.includes('-')) {
+                const parts = rangeStr.split('-');
+                startNum = parseInt(parts[0].trim());
+                endNum = parseInt(parts[1].trim());
+            } else {
+                startNum = parseInt(rangeStr);
+                endNum = parseInt(rangeStr);
+            }
+
+            if (isNaN(startNum) || isNaN(endNum) || startNum > endNum || startNum <= 0) {
+                errEl.innerText = "⚠️ Invalid number range format! Use format like '250-274'.";
+                errEl.classList.remove('hidden');
+                return;
+            }
+
+            if (endNum - startNum > 200) {
+                errEl.innerText = "⚠️ Range maximum limit is 200 cards per section!";
+                errEl.classList.remove('hidden');
+                return;
+            }
+
+            if (editingSectionId) {
+                const cs = customSections.find(s => s.id === editingSectionId);
+                if (cs) {
+                    cs.name = name;
+                    cs.setCode = setCode;
+                    cs.startNum = startNum;
+                    cs.endNum = endNum;
+
+                    const generatedCards = [];
+                    for (let num = startNum; num <= endNum; num++) {
+                        const numStr = String(num);
+                        generatedCards.push({
+                            id: `${cs.id}_${numStr}`,
+                            name: `Unrevealed ${setCode.toUpperCase()} #${numStr}`,
+                            set: setCode,
+                            num: numStr,
+                            rarity: "Rare"
+                        });
+                    }
+                    cs.cards = generatedCards;
+                }
+            } else {
+                const customId = `custom_${Date.now()}`;
+                const generatedCards = [];
+
+                for (let num = startNum; num <= endNum; num++) {
+                    const numStr = String(num);
+                    generatedCards.push({
+                        id: `${customId}_${numStr}`,
+                        name: `Unrevealed ${setCode.toUpperCase()} #${numStr}`,
+                        set: setCode,
+                        num: numStr,
+                        rarity: "Rare"
+                    });
+                }
+
+                const newSectionObj = {
+                    id: customId,
+                    name: name,
+                    setCode: setCode,
+                    startNum: startNum,
+                    endNum: endNum,
+                    cards: generatedCards
+                };
+
+                customSections.push(newSectionObj);
+                switchSection(customId);
+            }
+
+            closeAddSectionModal();
+            renderSectionTabs();
+            updateStats();
+        }
+
+        function handleCardOwnershipToggle(card) {
+            const targetSection = activeSection;
+            let key;
+            if (['poster', 'realms', 'bookcover', 'dragon'].includes(targetSection)) {
+                key = `${targetSection}-${card.id}`;
+            } else if (targetSection === 'grails') {
+                key = `grails-${card.set}-${card.num}`;
+            } else {
+                key = `custom-${targetSection}-${card.set}-${card.num}`;
+            }
+
+            const isOwnedCurrently = !!collection[key];
+            const wasCompleteBefore = isSectionComplete(targetSection);
+
+            if (isOwnedCurrently && (viewMode === 'archive' || wasCompleteBefore)) {
+                promptBreakArchiveModal(card, () => {
+                    executeCardToggle(card, key, targetSection, wasCompleteBefore);
+                });
+            } else {
+                executeCardToggle(card, key, targetSection, wasCompleteBefore);
+            }
+        }
+
+        function executeCardToggle(card, key, targetSection, wasCompleteBefore) {
+            const newState = !collection[key];
+            collection[key] = newState;
+
+            const isCompleteNow = isSectionComplete(targetSection);
+
+            if (!wasCompleteBefore && isCompleteNow) {
+                pendingCompletedSection = targetSection;
+                updateStatsNumbersOnly();
+                
+                const sectionLabels = {
+                    poster: 'Poster Art',
+                    realms: 'Ring Showcase',
+                    bookcover: 'The Hobbit Book Cover',
+                    dragon: 'The Hobbit Dragon Hoard',
+                    grails: 'Vault Grails'
+                };
+
+                const cs = customSections.find(s => s.id === targetSection);
+                const displayTitle = cs ? cs.name : (sectionLabels[targetSection] || 'Binder');
+
+                triggerVictoryCelebration(displayTitle);
+            } else {
+                updateStats();
+            }
+        }
+
+        function triggerVictoryCelebration(secName) {
+            const modal = document.getElementById('victory-modal');
+            const subtitle = document.getElementById('victory-modal-subtitle');
+            const body = document.getElementById('victory-modal-body');
+
+            subtitle.innerText = `You have completed the entire ${secName} collection!`;
+            
+            const quotes = [
+                '"By the light of Eärendil and the ancient fires of Erebor, your vault shines with complete triumph!"',
+                '"A masterwork fit for the vaults of Minas Tirith! Every scroll in this section is accounted for!"',
+                '"Not even Smaug\'s dragon-hoard holds a collection as glorious as the one you have assembled!"',
+                '"From Bilbo\'s study to Rivendell\'s archives, songs shall be sung of your dedication!"'
+            ];
+            body.innerText = quotes[Math.floor(Math.random() * quotes.length)];
+
+            modal.classList.remove('hidden');
+            setTimeout(() => { modal.classList.remove('opacity-0'); }, 10);
+        }
+
+        let pendingCompletedSection = null;
+
+        function closeVictoryModal() {
+            const modal = document.getElementById('victory-modal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                if (pendingCompletedSection) {
+                    pendingCompletedSection = null;
+                    updateStats();
+                }
+            }, 300);
+        }
+
+        let pendingCardToggle = null;
+
+        function promptBreakArchiveModal(card, toggleAction) {
+            pendingCardToggle = toggleAction;
+            const modal = document.getElementById('break-archive-modal');
+            const desc = document.getElementById('break-archive-desc');
+            desc.innerText = `"${card.name}" belongs to a 100% completed collection! Removing it will unseal the collection and return it to Chase Mode. Are you sure?`;
+            modal.classList.remove('hidden');
+        }
+
+        function closeBreakArchiveModal() {
+            document.getElementById('break-archive-modal').classList.add('hidden');
+            pendingCardToggle = null;
         }
 
         function prevPage() {
@@ -1791,63 +2219,6 @@
 
             updateTabStyles();
             updatePaginationUI();
-        }
-
-        function updateTabStyles() {
-            const posterBtn = document.getElementById('tab-poster');
-            const realmsBtn = document.getElementById('tab-realms');
-            const coverBtn = document.getElementById('tab-bookcover');
-            const dragonBtn = document.getElementById('tab-dragon');
-            const grailsBtn = document.getElementById('tab-grails');
-
-            const label = document.getElementById('binder-current-label');
-            const statusDot = document.getElementById('binder-status-dot');
-            const searchWidget = document.getElementById('grails-search-widget');
-
-            const baseClass = "px-1 py-2.5 rounded-xl border font-semibold text-[10px] tracking-wider transition-all flex flex-col items-center justify-center gap-1 text-center";
-            const activeStyle = "shadow-md";
-            const inactiveStyle = "border-gray-850 bg-gray-950/50 hover:bg-gray-800 text-gray-400";
-
-            const applyStyle = (btn, isAct, activeExtra) => {
-                if (!btn) return;
-                btn.className = `${baseClass} ${isAct ? `${activeStyle} ${activeExtra}` : inactiveStyle}`;
-            };
-
-            applyStyle(posterBtn, activeSection === 'poster', "border-amber-500/30 bg-amber-950/20 text-amber-300");
-            applyStyle(realmsBtn, activeSection === 'realms', "border-cyan-500/30 bg-cyan-950/20 text-cyan-300");
-            applyStyle(coverBtn, activeSection === 'bookcover', "border-emerald-500/30 bg-emerald-950/20 text-emerald-300");
-            applyStyle(dragonBtn, activeSection === 'dragon', "border-orange-500/30 bg-orange-950/20 text-orange-300");
-            applyStyle(grailsBtn, activeSection === 'grails', "border-purple-500/40 bg-purple-950/20 text-purple-300 col-span-2 sm:col-span-1");
-
-            if (searchWidget) {
-                if (activeSection === 'grails') {
-                    searchWidget.classList.remove('hidden');
-                } else {
-                    searchWidget.classList.add('hidden');
-                }
-            }
-
-            if (label && statusDot) {
-                if (activeSection === 'poster') {
-                    label.innerText = "Poster Art (Traditional Foil)";
-                    statusDot.className = "w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse";
-                } else if (activeSection === 'realms') {
-                    label.innerText = "Ring Showcase (Surge Foil)";
-                    statusDot.className = "w-2.5 h-2.5 rounded-full bg-cyan-500 animate-pulse";
-                } else if (activeSection === 'bookcover') {
-                    label.innerText = "The Hobbit Book Cover (Surge Foil)";
-                    statusDot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse";
-                } else if (activeSection === 'dragon') {
-                    label.innerText = "The Hobbit Dragon Hoard (Surge Foil)";
-                    statusDot.className = "w-2.5 h-2.5 rounded-full bg-orange-500 animate-pulse";
-                } else if (activeSection === 'grails') {
-                    label.innerText = "Vault Grails (Cosmic Holographic)";
-                    statusDot.className = "w-2.5 h-2.5 rounded-full bg-purple-500 animate-pulse";
-                } else {
-                    label.innerText = viewMode === 'chase' ? "All Chase Collections Complete" : "No Archived Collections";
-                    statusDot.className = "w-2.5 h-2.5 rounded-full bg-gray-500";
-                }
-            }
         }
 
         function setFilter(filt) {
@@ -2068,9 +2439,23 @@
         }
 
         function checkAllCards() {
-            const list = activeSection === 'poster' ? POSTER_CARDS : (activeSection === 'realms' ? REALMS_CARDS : (activeSection === 'bookcover' ? BOOKCOVER_CARDS : (activeSection === 'dragon' ? DRAGON_CARDS : grailsCollection)));
+            let list;
+            if (activeSection === 'poster') list = POSTER_CARDS;
+            else if (activeSection === 'realms') list = REALMS_CARDS;
+            else if (activeSection === 'bookcover') list = BOOKCOVER_CARDS;
+            else if (activeSection === 'dragon') list = DRAGON_CARDS;
+            else if (activeSection === 'grails') list = grailsCollection;
+            else {
+                const cs = customSections.find(s => s.id === activeSection);
+                list = cs ? cs.cards : [];
+            }
+
             list.forEach(c => {
-                const key = activeSection === 'grails' ? `grails-${c.set}-${c.num}` : `${activeSection}-${c.id}`;
+                let key;
+                if (['poster', 'realms', 'bookcover', 'dragon'].includes(activeSection)) key = `${activeSection}-${c.id}`;
+                else if (activeSection === 'grails') key = `grails-${c.set}-${c.num}`;
+                else key = `custom-${activeSection}-${c.set}-${c.num}`;
+
                 collection[key] = true;
             });
             updateStats();
@@ -2129,10 +2514,14 @@
             } else if (activeSection === 'dragon') {
                 document.getElementById('modal-card-subtitle').innerText = "The Hobbit Dragon Hoard Showcase Frame";
                 deleteBtn.classList.add('hidden');
-            } else {
+            } else if (activeSection === 'grails') {
                 document.getElementById('modal-card-subtitle').innerText = "Custom Vault Grail Print Selection";
                 deleteBtn.classList.remove('hidden');
                 deleteBtn.onclick = () => deleteGrailCard(card);
+            } else {
+                const cs = customSections.find(s => s.id === activeSection);
+                document.getElementById('modal-card-subtitle').innerText = cs ? cs.name : "Custom Binder Section";
+                deleteBtn.classList.add('hidden');
             }
 
             document.getElementById('modal-card-num').innerText = `#${card.num}`;
@@ -2195,7 +2584,15 @@
         }
 
         function syncModalToggleButton(card) {
-            const key = activeSection === 'grails' ? `grails-${card.set}-${card.num}` : `${activeSection}-${card.id}`;
+            let key;
+            if (['poster', 'realms', 'bookcover', 'dragon'].includes(activeSection)) {
+                key = `${activeSection}-${card.id}`;
+            } else if (activeSection === 'grails') {
+                key = `grails-${card.set}-${card.num}`;
+            } else {
+                key = `custom-${activeSection}-${card.set}-${card.num}`;
+            }
+
             const isOwned = !!collection[key];
             const btn = document.getElementById('modal-toggle-ownership');
 
@@ -2222,7 +2619,7 @@
             notification.classList.add('hidden');
             notification.innerText = "";
 
-            const completeState = { collection: collection, grails: grailsCollection };
+            const completeState = { collection: collection, grails: grailsCollection, customSections: customSections };
             const jsonStr = JSON.stringify(completeState);
             const encoded = btoa(unescape(encodeURIComponent(jsonStr)));
 
@@ -2274,12 +2671,12 @@
                 const parsed = JSON.parse(decodedJson);
 
                 if (typeof parsed === 'object' && parsed !== null) {
-                    if (parsed.collection && parsed.grails) {
-                        collection = parsed.collection;
-                        grailsCollection = parsed.grails;
-                    } else {
-                        collection = parsed;
-                    }
+                    if (parsed.collection) collection = parsed.collection;
+                    if (parsed.grails) grailsCollection = parsed.grails;
+                    if (parsed.customSections) customSections = parsed.customSections;
+                    if (!parsed.collection && !parsed.grails) collection = parsed;
+
+                    renderSectionTabs();
                     updateStats();
                     closeImportModal();
                 } else {
